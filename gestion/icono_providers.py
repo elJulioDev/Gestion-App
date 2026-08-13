@@ -1,7 +1,6 @@
 import re
 import json
 import urllib.request
-import urllib.parse
 
 
 def _obtener_config():
@@ -13,18 +12,16 @@ def _compile_pattern(pattern_str):
     return re.compile(pattern_str, re.I)
 
 
-def _proveedor_thumb(url, cfg):
+def _proveedor_video(url, cfg):
+    """Devuelve el dict del video si existe en el proveedor, None si fue borrado.
+    Lanza excepción si el proveedor es inalcanzable o responde algo inesperado."""
     pat = _compile_pattern(cfg.url_pattern)
     m = pat.search(url)
     if not m:
-        return None
+        raise ValueError('URL no del proveedor')
 
     video_id = m.group(1)
-    api_url = (
-        f"{cfg.api_url}{cfg.api_video_endpoint}"
-        f"?id={video_id}"
-    )
-
+    api_url = f"{cfg.api_url}{cfg.api_video_endpoint}?id={video_id}"
     for k, v in cfg.api_params.items():
         api_url += f"&{k}={v}"
 
@@ -34,25 +31,26 @@ def _proveedor_thumb(url, cfg):
                        'Chrome/120.0.0.0 Safari/537.36'
     })
 
-    try:
-        with urllib.request.urlopen(req, timeout=8) as resp:
-            data = json.loads(resp.read().decode())
+    with urllib.request.urlopen(req, timeout=4) as resp:
+        data = json.loads(resp.read().decode())
 
-        if isinstance(data, list):
-            return None
-        if data.get('error'):
-            return None
+    if isinstance(data, list) or data.get('error'):
+        return None
+    return data
 
-        thumb = (data.get('default_thumb') or {}).get('src')
-        if thumb:
-            return thumb
 
-        thumbs = data.get('thumbs') or []
-        if thumbs:
-            return thumbs[0].get('src')
+def _proveedor_thumb(url, cfg):
+    data = _proveedor_video(url, cfg)
+    if not data:
+        return None
 
-    except Exception:
-        pass
+    thumb = (data.get('default_thumb') or {}).get('src')
+    if thumb:
+        return thumb
+
+    thumbs = data.get('thumbs') or []
+    if thumbs:
+        return thumbs[0].get('src')
 
     return None
 
@@ -60,10 +58,6 @@ def _proveedor_thumb(url, cfg):
 def resolver_icono_externo(url, dominio):
     try:
         cfg = _obtener_config()
+        return _proveedor_thumb(url, cfg)
     except Exception:
         return None
-
-    pat = _compile_pattern(cfg.url_pattern)
-    if pat.search(url):
-        return _proveedor_thumb(url, cfg)
-    return None

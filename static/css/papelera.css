@@ -1,0 +1,191 @@
+/* ════════════════════════════════════════════════════════════
+   papelera.css — Gestión / Sistema Intranet
+   Requiere theme.css. Extiende sus tokens sin redefinirlos.
+   ════════════════════════════════════════════════════════════ */
+
+.papelera-main {
+    margin-top: var(--header-h);
+    padding: 24px 28px;
+    height: calc(100vh - var(--header-h));
+    overflow-y: auto;
+}
+
+.papelera-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ── Item ─────────────────────────────────────────────────── */
+.papelera-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 8px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-muted);
+    border-radius: var(--r-md);
+    transition:
+        background var(--t-fast),
+        border-color var(--t-fast),
+        transform var(--t-normal),
+        box-shadow var(--t-normal);
+}
+
+.papelera-item:hover {
+    background: var(--surface-3);
+    border-color: var(--border-default);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ── Zona clicable: abre la URL original ──────────────────── */
+.papelera-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+    text-decoration: none;
+    color: var(--text-primary);
+    border-radius: var(--r);
+    position: relative;
+}
+
+.papelera-link:hover { text-decoration: none; color: var(--text-primary); }
+.papelera-link:focus-visible {
+    outline: none;
+    box-shadow: var(--ring-focus);
+}
+
+.papelera-link::after {
+    content: '';
+    position: absolute;
+    inset: -8px -8px -8px -12px;
+}
+
+.papelera-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r);
+    flex-shrink: 0;
+    object-fit: cover;
+    background: var(--surface-3);
+    border: 1px solid var(--border-muted);
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-subtle);
+}
+
+.papelera-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.papelera-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.papelera-meta {
+    font-size: 11px;
+    color: var(--text-subtle);
+    margin-top: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Indicador: se abre en pestaña nueva */
+.papelera-open-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-subtle);
+    opacity: 0;
+    transition: opacity var(--t-fast);
+}
+
+.papelera-item:hover .papelera-open-hint,
+.papelera-link:focus-visible .papelera-open-hint {
+    opacity: 1;
+}
+
+/* ── Acciones (restaurar / eliminar) ──────────────────────── */
+.papelera-actions {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-shrink: 0;
+    background: var(--surface-4);
+    border: 1px solid var(--border-default);
+    border-radius: var(--r-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.papelera-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: var(--text-muted);
+    transition: background var(--t-fast), color var(--t-fast);
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.papelera-action + .papelera-action {
+    border-left: 1px solid var(--border-muted);
+}
+
+.papelera-action--restore:hover {
+    background: var(--blue-emphasis);
+    color: #fff;
+}
+
+.papelera-action--delete:hover {
+    background: var(--red-emphasis);
+    color: #fff;
+}
+
+/* ── Vacío ────────────────────────────────────────────────── */
+.papelera-empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-subtle);
+}
+
+.papelera-empty h3 {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin: 10px 0 4px;
+}
+
+.papelera-empty p { font-size: 13px; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .papelera-main { padding: 14px 12px; }
+    .papelera-icon { width: 34px; height: 34px; }
+}

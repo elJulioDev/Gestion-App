@@ -6,12 +6,10 @@ from django.http import JsonResponse, QueryDict
 from django.views.decorators.http import require_POST, require_http_methods
 from django.db.models import Count, Prefetch, Case, When, Value, IntegerField, Q
 from ..models import Carpeta, Marcador, ProveedorConfig
-from ..thumbnail_checker import verificar_marcadores
+from ..thumbnail_checker import verificar_marcadores_ids
 
 @login_required(login_url='gestion:login')
 def marcadores_view(request):
-    verificar_marcadores(request.user)
-
     marcadores_qs = Marcador.objects.filter(
         usuario=request.user,
         eliminado=False,
@@ -115,6 +113,19 @@ def editar_marcador(request, pk):
         'url': m.url,
         'carpeta_id': carpeta.id,
         'icono': m.icono,
+    })
+
+@login_required(login_url='gestion:login')
+@require_POST
+def verificar_marcadores_view(request):
+    ids = [int(i) for i in (request.POST.get('ids') or '').split(',') if i.strip().isdigit()]
+    if not ids:
+        return JsonResponse({'ok': False, 'error': 'Sin marcadores para verificar'}, status=400)
+    resultados = verificar_marcadores_ids(request.user, ids)
+    return JsonResponse({
+        'ok': True,
+        'resultados': resultados,
+        'borrados': sum(1 for v in resultados.values() if v == 'borrado'),
     })
 
 @login_required(login_url='gestion:login')

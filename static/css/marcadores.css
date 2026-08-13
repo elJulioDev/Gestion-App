@@ -107,7 +107,9 @@ body {
     flex-shrink: 0;
     background: var(--sidebar-bg);
     border-right: 1px solid var(--sidebar-border);
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     padding: 12px 0;
     transition: width var(--t-normal), opacity var(--t-normal);
 }
@@ -120,6 +122,67 @@ body {
 
 .sidebar-nav {
     padding: 0 8px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* ── Botón "Verificar videos borrados" (fijo al fondo) ──── */
+.sidebar-check-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    margin: 12px 8px 0;
+    padding: 8px;
+    background: var(--surface-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--r);
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+
+.sidebar-check-btn svg { flex-shrink: 0; color: var(--text-subtle); }
+.sidebar-check-btn:hover {
+    background: var(--blue-subtle);
+    border-color: var(--blue-border);
+    color: var(--blue);
+}
+.sidebar-check-btn:hover svg { color: var(--blue); }
+
+/* ── Modal verificación: barra de progreso animada ──────── */
+.check-result {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.progress { position: relative; }
+
+#check-progress {
+    position: relative;
+    transition: width var(--t-normal);
+}
+
+#check-progress.is-running::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -40%;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    animation: progress-shimmer 1.2s linear infinite;
+}
+
+@keyframes progress-shimmer {
+    from { left: -40%; }
+    to   { left: 100%; }
 }
 
 .sidebar-section-label {
@@ -592,7 +655,7 @@ body.select-mode .bm-card:not(.is-selected):hover {
         box-shadow: none;
         width: 260px;
         opacity: 1;
-        overflow-y: auto;
+        overflow: hidden;
     }
 
     .sidebar.is-collapsed {

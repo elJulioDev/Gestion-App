@@ -13,6 +13,7 @@ urlpatterns = [
     path('marcadores/carpeta/<int:pk>/editar/', views.editar_carpeta, name='editar_carpeta'),
     path('marcadores/carpeta/<int:pk>/eliminar/', views.eliminar_carpeta, name='eliminar_carpeta'),
     path('marcadores/crear/', views.crear_marcador, name='crear_marcador'),
+    path('marcadores/verificar/', views.verificar_marcadores_view, name='verificar_marcadores'),
     path('marcadores/<int:pk>/eliminar/', views.eliminar_marcador, name='eliminar_marcador'),
     path('marcadores/<int:pk>/editar/', views.editar_marcador, name='editar_marcador'),
     path('marcadores/<int:pk>/mover/', views.mover_marcador, name='mover_marcador'),

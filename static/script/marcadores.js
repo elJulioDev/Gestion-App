@@ -485,7 +485,116 @@ $('#bulk-del-confirm').addEventListener('click', async () => {
     location.reload();
 });
 
-/* ── Atajos de teclado ───────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════
+   VERIFICAR VIDEOS BORRADOS
+   ══════════════════════════════════════════════════════════ */
+const checkBtn      = $('#check-btn');
+const checkStatus   = $('#check-status');
+const checkProgress = $('#check-progress');
+const checkResult   = $('#check-result');
+const checkCancel   = $('#check-cancel');
+const checkDone     = $('#check-done');
+const checkBackdrop = $('#check-backdrop');
+
+const CHECK_BATCH = 40;
+let checkCtrl   = null;
+let checkDirty  = false;
+
+function cancelCheck() { if (checkCtrl) checkCtrl.abort(); }
+
+function closeCheck() {
+    cancelCheck();
+    closeBackdrop('check-backdrop');
+    if (checkDirty) location.reload();
+}
+
+function checkSetState(running) {
+    checkCancel.style.display = running ? '' : 'none';
+    checkDone.style.display   = running ? 'none' : '';
+    checkProgress.classList.toggle('is-running', running);
+}
+
+checkBtn.addEventListener('click', async () => {
+    const ids = [...$$('.bm-card')].map(c => c.dataset.id).filter(Boolean);
+    if (!ids.length) {
+        checkResult.style.display = '';
+        checkResult.textContent = 'No hay marcadores que verificar.';
+        checkSetState(false);
+        openBackdrop('check-backdrop');
+        return;
+    }
+
+    checkDirty = false;
+    checkResult.style.display = 'none';
+    checkProgress.style.width = '0%';
+    checkProgress.classList.remove('is-success');
+    checkSetState(true);
+    checkStatus.textContent = 'Comprobando contra el proveedor…';
+    openBackdrop('check-backdrop');
+
+    const total = ids.length;
+    let procesados = 0, borrados = 0, errores = 0, cancelado = false;
+    const ctrl = new AbortController();
+    checkCtrl = ctrl;
+    checkCancel.onclick = () => ctrl.abort();
+
+    for (let i = 0; i < ids.length; i += CHECK_BATCH) {
+        const batch = ids.slice(i, i + CHECK_BATCH);
+        let r;
+        try {
+            r = await fetch('/marcadores/verificar/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrf },
+                body: new URLSearchParams({ ids: batch.join(',') }),
+                signal: ctrl.signal,
+            }).then(res => res.json());
+        } catch (e) {
+            if (ctrl.signal.aborted) { cancelado = true; break; }
+            errores += batch.length;
+        }
+        if (r && r.ok) {
+            const vals = Object.values(r.resultados || {});
+            borrados += vals.filter(v => v === 'borrado').length;
+            errores  += vals.filter(v => v === 'error').length;
+            if (borrados > 0) checkDirty = true;
+        } else if (r) {
+            errores += batch.length;
+        }
+
+        procesados += batch.length;
+        checkProgress.style.width = Math.round(procesados / total * 100) + '%';
+        checkStatus.textContent = `Analizando ${Math.min(procesados, total)} de ${total}…`;
+    }
+
+    checkCtrl = null;
+    checkCancel.onclick = null;
+    checkDirty = borrados > 0;
+
+    if (cancelado) {
+        checkStatus.textContent = 'Verificación cancelada.';
+        checkProgress.style.width = (procesados / total * 100).toFixed(0) + '%';
+    } else {
+        checkStatus.textContent = 'Verificación completa';
+        checkProgress.style.width = '100%';
+        if (checkDirty) checkProgress.classList.add('is-success');
+        const partes = [];
+        if (borrados) partes.push(`${borrados} enviado(s) a la papelera`);
+        if (errores)  partes.push(`${errores} sin comprobar (proveedor inalcanzable)`);
+        if (!partes.length) partes.push('todos los videos están disponibles');
+        checkResult.style.display = '';
+        checkResult.textContent = partes.join(', ') + '.';
+    }
+
+    checkSetState(false);
+});
+
+checkDone.addEventListener('click', closeCheck);
+$('#check-close').addEventListener('click', closeCheck);
+checkBackdrop.addEventListener('click', e => { if (e.target === checkBackdrop) closeCheck(); });
+
+/* ══════════════════════════════════════════════════════════
+   Atajos de teclado
+   ══════════════════════════════════════════════════════════ */
 document.addEventListener('keydown', e => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
@@ -508,6 +617,7 @@ document.addEventListener('keydown', e => {
             closeDelBmModal();
             closeEditFolderModal();
             closeDelFolderModal();
+            closeCheck();
         }
     }
     if (selectMode && (e.metaKey || e.ctrlKey) && e.key === 'a') {
