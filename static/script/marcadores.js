@@ -517,13 +517,22 @@ document.addEventListener('keydown', e => {
     }
 });
 
-// Decodifica el dominio en tiempo de ejecución para evitar rastros en el código fuente
-const PATRON_PROVEEDOR = 'ZXBvcm5lclwuY29tXC8oPzp2aWRlb3xoZC1wb3JufHBvcm4tdmlkZW8pW1wvLV0oW0EtWmEtejAtOV0rKQ==';
-const VIDEO_EXT_RE = new RegExp(atob(PATRON_PROVEEDOR), 'i');
+// Obtener patrón del proveedor desde el servidor (solo autenticados)
+let VIDEO_EXT_RE = null;
+fetch('/api/videos/provider-config/', {
+    headers: { 'X-CSRFToken': csrf }
+})
+.then(r => r.json())
+.then(data => {
+    if (data.ok && data.url_pattern) {
+        VIDEO_EXT_RE = new RegExp(data.url_pattern, 'i');
+    }
+})
+.catch(() => {});
 
 // Interceptar clic en cards de video reconocidos
 document.addEventListener('click', e => {
-    // Ignorar en modo selección o si se hizo clic en acciones
+    if (!VIDEO_EXT_RE) return;
     if (document.body.classList.contains('select-mode')) return;
     if (e.target.closest('.bm-action-btn')) return;
 
@@ -534,7 +543,5 @@ document.addEventListener('click', e => {
     if (!match) return;
 
     e.preventDefault();
-    
-    // Redirigir a la nueva vista dedicada al reproductor
     window.location.href = `/video/${match[1]}/`;
 }, true);

@@ -1,18 +1,10 @@
-import os
 import json
 import requests
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 
-from gestion.models import Carpeta, CategoriaBrowser
-
-# ── Configuración Segura ─────────────────────────────────────────
-# Obtenemos la URL base de forma segura desde las variables de entorno
-PROVEEDOR_API_URL = os.environ.get('PROVEEDOR_API_URL', '')
-_BASE  = f"{PROVEEDOR_API_URL}/api/v2"
-_THUMB = "big"
-_PER   = 24
+from gestion.models import Carpeta, CategoriaBrowser, ProveedorConfig
 
 _HEADERS = {
     "User-Agent": (
@@ -35,10 +27,6 @@ def video_browser_view(request):
 
 @login_required(login_url="gestion:login")
 def categorias_proxy(request):
-    """
-    GET /api/videos/categorias/
-    Devuelve la lista de categorías almacenadas en la BD.
-    """
     cats = (
         CategoriaBrowser.objects
         .filter(activa=True)
@@ -49,38 +37,42 @@ def categorias_proxy(request):
 
 
 @login_required(login_url="gestion:login")
+def provider_config_view(request):
+    cfg = ProveedorConfig.load()
+    return JsonResponse({
+        "ok": True,
+        "url_pattern": cfg.url_pattern,
+    })
+
+
+@login_required(login_url="gestion:login")
 def video_search_proxy(request):
-    """
-    GET /api/videos/search/?q=TAG&page=1&order=latest
-    """
     query    = request.GET.get("q", "").strip()
     page     = request.GET.get("page", "1")
-    per_page = request.GET.get("per_page", str(_PER))
+    per_page = request.GET.get("per_page", "24")
     order    = request.GET.get("order", "latest")
 
     if not query:
         return JsonResponse({"ok": False, "error": "q requerido"}, status=400)
-        
-    # Protección: Si la variable de entorno no está configurada, evitamos la petición mal formada
-    if not PROVEEDOR_API_URL:
-        return JsonResponse({"ok": False, "error": "API no configurada en el servidor"}, status=500)
+
+    cfg = ProveedorConfig.load()
+
+    if not cfg.api_url:
+        return JsonResponse({"ok": False, "error": "API no configurada"}, status=500)
+
+    params = {
+        "query":    query,
+        "per_page": per_page,
+        "page":     page,
+        "format":   "json",
+        "order":    order,
+    }
+    params.update(cfg.api_params)
+    params.update(cfg.api_extra_flags)
 
     try:
-        r = requests.get(
-            f"{_BASE}/video/search/",
-            params={
-                "query":     query,
-                "per_page":  per_page,
-                "page":      page,
-                "thumbsize": _THUMB,
-                "format":    "json",
-                "order":     order,
-                "gay":       1,
-                "lq":        1,
-            },
-            headers=_HEADERS,
-            timeout=15,
-        )
+        url = f"{cfg.api_url}{cfg.api_search_endpoint}"
+        r = requests.get(url, params=params, headers=_HEADERS, timeout=15)
         r.raise_for_status()
         data = r.json()
 

@@ -2,6 +2,38 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+class ProveedorConfig(models.Model):
+    """
+    Configuración del proveedor de contenido.
+    Singleton: solo debe existir un registro (pk=1).
+    Todos los parámetros sensibles viven aquí, no en código fuente ni .env.
+    """
+    api_url = models.URLField(max_length=200, help_text='URL base de la API (sin barra final)')
+    domain = models.CharField(max_length=100, help_text='Dominio del proveedor')
+    embed_url = models.URLField(max_length=200, help_text='URL base para embeds (sin barra final)')
+    url_pattern = models.TextField(help_text='Regex para identificar URLs del proveedor')
+    api_search_endpoint = models.CharField(max_length=100, default='/api/v2/video/search/')
+    api_video_endpoint = models.CharField(max_length=100, default='/api/v2/video/id/')
+    api_params = models.JSONField(default=dict, help_text='Parámetros extra para la API (ej: thumbsize, format)')
+    api_extra_flags = models.JSONField(default=dict, help_text='Flags adicionales de la API (ej: gay, lq)')
+
+    class Meta:
+        verbose_name = 'configuración del proveedor'
+        verbose_name_plural = 'configuraciones del proveedor'
+
+    def __str__(self):
+        return f'Proveedor: {self.domain}'
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
 class Carpeta(models.Model):
     nombre = models.CharField(max_length=80)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carpetas')
