@@ -2,6 +2,8 @@ import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 
 
 def _usuario_permitido(user):
@@ -42,6 +44,8 @@ def login_view(request):
     return render(request, 'gestion/login.html')
 
 
+@login_required(login_url='gestion:login')
+@require_POST
 def logout_view(request):
     logout(request)
     return redirect('gestion:login')

@@ -54,6 +54,20 @@ def video_search_proxy(request):
 
     if not query:
         return JsonResponse({"ok": False, "error": "q requerido"}, status=400)
+    if len(query) > 200:
+        return JsonResponse({"ok": False, "error": "Query demasiado largo"}, status=400)
+
+    try:
+        page = max(1, min(int(page), 200))
+    except (ValueError, TypeError):
+        page = 1
+    try:
+        per_page = max(1, min(int(per_page), 50))
+    except (ValueError, TypeError):
+        per_page = 24
+
+    if order not in ('latest', 'top-rated', 'most-viewed', 'top-weekly', 'top-monthly', 'longest', 'shortest'):
+        order = 'latest'
 
     cfg = ProveedorConfig.load()
 

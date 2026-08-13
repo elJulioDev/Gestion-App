@@ -1,4 +1,5 @@
 import json
+import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, QueryDict
@@ -142,6 +143,10 @@ def mover_marcador(request, pk):
 
 @login_required(login_url='gestion:login')
 def reproductor_view(request, video_id):
+    if not re.fullmatch(r'[a-zA-Z0-9_-]+', video_id):
+        from django.http import Http404
+        raise Http404
+
     cfg = ProveedorConfig.load()
     url_final = f"{cfg.embed_url}/{video_id}/?autoplay=1"
 

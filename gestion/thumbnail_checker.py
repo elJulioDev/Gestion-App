@@ -1,15 +1,23 @@
 import logging
 import urllib.request
 import urllib.error
+from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
 
 _BATCH_SIZE = 8
 _TIMEOUT = 3
+_ALLOWED_HOSTS = ('google.com', 'googleusercontent.com', 'gstatic.com')
 
 
 def _check_icono_url(url):
     """Return True if the icono URL is reachable (HTTP 2xx)."""
+    parsed = urlparse(url)
+    if parsed.scheme not in ('http', 'https'):
+        return False
+    if not any(parsed.hostname.endswith(h) for h in _ALLOWED_HOSTS if parsed.hostname):
+        return False
+
     req = urllib.request.Request(url, method='HEAD', headers={
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                        'AppleWebKit/537.36 (KHTML, like Gecko) '

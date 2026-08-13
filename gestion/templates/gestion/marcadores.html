@@ -56,10 +56,13 @@
                 <span>Papelera</span>
             </a>
             <div class="topbar-divider"></div>
-            <a href="{% url 'gestion:logout' %}" class="btn btn-ghost btn-sm">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2 2.75C2 1.784 2.784 1 3.75 1h4a.75.75 0 0 1 0 1.5h-4a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h4a.75.75 0 0 1 0 1.5h-4A1.75 1.75 0 0 1 2 13.25V2.75zm9.44 4.5-1.97-1.97a.75.75 0 0 1 1.06-1.06l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 1 1-1.06-1.06l1.97-1.97H6.75a.75.75 0 0 1 0-1.5z"/></svg>
-                <span class="logout-label">Salir</span>
-            </a>
+            <form method="post" action="{% url 'gestion:logout' %}" style="display:inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-ghost btn-sm" title="Cerrar sesión">
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2 2.75C2 1.784 2.784 1 3.75 1h4a.75.75 0 0 1 0 1.5h-4a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h4a.75.75 0 0 1 0 1.5h-4A1.75 1.75 0 0 1 2 13.25V2.75zm9.44 4.5-1.97-1.97a.75.75 0 0 1 1.06-1.06l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 1 1-1.06-1.06l1.97-1.97H6.75a.75.75 0 0 1 0-1.5z"/></svg>
+                    <span class="logout-label">Salir</span>
+                </button>
+            </form>
         </div>
     </div>
 </header>
