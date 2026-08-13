@@ -10,6 +10,7 @@ __pycache__/
 
 # Variables de entorno (¡Crítico para que no se filtren tus claves de Supabase!)
 .env
+AGENTS.md
 
 # Archivos de la base de datos local
 db.sqlite3
