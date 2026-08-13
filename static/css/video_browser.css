@@ -7,26 +7,28 @@ html, body { height: 100%; overflow: hidden; }
 body { display: flex; flex-direction: column; }
 
 /* ── Topbar overrides (shared base in theme.css) ──────────── */
-.topbar-center { max-width: none; margin: 0; }
 
-/* Botón toggle sidebar (siempre visible) */
+/* Botón toggle sidebar (siempre visible) — basado en btn btn-ghost btn-sm */
 .vb-sidebar-toggle {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     padding: 4px 10px;
-    background: var(--surface-2);
-    border: 1px solid var(--border-muted);
+    background: transparent;
+    border: 1px solid transparent;
     border-radius: var(--r);
     font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 500;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all var(--t-fast);
+    transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
     white-space: nowrap;
+    line-height: 1.2;
+    -webkit-user-select: none;
+    user-select: none;
 }
-.vb-sidebar-toggle:hover { background: var(--surface-3); border-color: var(--border-default); color: var(--text-primary); }
+.vb-sidebar-toggle:hover { background: var(--surface-3); color: var(--text-primary); }
 .vb-sidebar-toggle.is-active { background: var(--blue-subtle); border-color: var(--blue-border); color: var(--blue); }
 .vb-sidebar-toggle .toggle-count {
     display: none;
@@ -40,42 +42,6 @@ body { display: flex; flex-direction: column; }
     text-align: center;
 }
 .vb-sidebar-toggle.has-active .toggle-count { display: inline; }
-
-/* ── Search ──────────────────────────────────────────────── */
-.vb-search-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    align-items: center;
-}
-.vb-search-icon {
-    position: absolute; left: 10px;
-    color: var(--text-subtle); pointer-events: none; flex-shrink: 0;
-}
-.vb-search-input {
-    width: 100%;
-    padding: 6px 32px 6px 32px;
-    background: var(--surface-2);
-    border: 1px solid var(--border-muted);
-    border-radius: var(--r);
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--text-primary);
-    outline: none;
-    transition: border-color var(--t-fast), box-shadow var(--t-fast);
-    box-shadow: var(--shadow-xs);
-}
-.vb-search-input::placeholder { color: var(--text-subtle); }
-.vb-search-input:hover { border-color: var(--border-default); }
-.vb-search-input:focus { border-color: var(--blue); box-shadow: var(--ring-focus); }
-.vb-search-clear {
-    position: absolute; right: 8px;
-    background: none; border: none; color: var(--text-subtle);
-    cursor: pointer; padding: 2px; border-radius: var(--r-xs);
-    display: flex; align-items: center;
-}
-.vb-search-clear:hover { color: var(--text-primary); background: var(--surface-3); }
 
 /* ── Sort ────────────────────────────────────────────────── */
 .vb-select {
@@ -484,6 +450,5 @@ body { display: flex; flex-direction: column; }
     .vb-main { padding: 14px 12px 40px; }
 }
 @media (max-width: 480px) {
-    .topbar-center { display: none; }
     .vb-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
 }

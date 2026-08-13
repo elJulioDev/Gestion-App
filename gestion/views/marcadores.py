@@ -3,15 +3,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, QueryDict
 from django.views.decorators.http import require_POST, require_http_methods
-from django.db.models import Count
-from ..models import Carpeta, Marcador, ProveedorConfig
 from django.db.models import Count, Prefetch, Case, When, Value, IntegerField, Q
+from ..models import Carpeta, Marcador, ProveedorConfig
+from ..thumbnail_checker import verificar_marcadores
 
 @login_required(login_url='gestion:login')
 def marcadores_view(request):
-    # 1. Creamos un QuerySet que identifique si NO tiene miniatura real
-    # Le da un peso de "1" a los que usan favicon (o nada) y "0" a los de miniatura
-    marcadores_qs = Marcador.objects.filter(usuario=request.user).annotate(
+    verificar_marcadores(request.user)
+
+    marcadores_qs = Marcador.objects.filter(
+        usuario=request.user,
+        eliminado=False,
+    ).annotate(
         sin_miniatura=Case(
             When(Q(icono='') | Q(icono__contains='google.com/s2/favicons'), then=Value(1)),
             default=Value(0),
@@ -21,7 +24,7 @@ def marcadores_view(request):
 
     # 2. Inyectamos este queryset a la consulta de las carpetas mediante prefetch_related
     carpetas = Carpeta.objects.filter(usuario=request.user).annotate(
-        total=Count('marcadores')
+        total=Count('marcadores', filter=Q(marcadores__eliminado=False))
     ).prefetch_related(
         Prefetch('marcadores', queryset=marcadores_qs)
     )
@@ -97,6 +100,7 @@ def editar_marcador(request, pk):
     url_anterior = Marcador.objects.filter(pk=pk).values_list('url', flat=True).first()
     if url != url_anterior:
         m.icono = ''
+        m.verificado = False
 
     m.titulo  = titulo
     m.url     = url
@@ -145,3 +149,31 @@ def reproductor_view(request, video_id):
         'video_id': video_id,
         'embed_url': url_final
     })
+
+@login_required(login_url='gestion:login')
+def papelera_view(request):
+    eliminados = Marcador.objects.filter(
+        usuario=request.user,
+        eliminado=True,
+    ).select_related('carpeta').order_by('-creado')
+
+    return render(request, 'gestion/papelera.html', {
+        'eliminados': eliminados,
+        'total': eliminados.count(),
+    })
+
+@login_required(login_url='gestion:login')
+@require_POST
+def restaurar_marcador(request, pk):
+    m = get_object_or_404(Marcador, pk=pk, usuario=request.user, eliminado=True)
+    m.eliminado = False
+    m.verificado = False
+    m.save()
+    return JsonResponse({'ok': True})
+
+@login_required(login_url='gestion:login')
+@require_POST
+def eliminar_definitivo(request, pk):
+    m = get_object_or_404(Marcador, pk=pk, usuario=request.user, eliminado=True)
+    m.delete()
+    return JsonResponse({'ok': True})

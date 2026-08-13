@@ -56,6 +56,8 @@ class Marcador(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='marcadores')
     orden = models.PositiveIntegerField(default=0)
     creado = models.DateTimeField(auto_now_add=True)
+    eliminado = models.BooleanField(default=False, help_text='Soft-delete: video no disponible en el proveedor')
+    verificado = models.BooleanField(default=False, help_text='True si ya se verificó que el icono/URL es válido')
 
     class Meta:
         ordering = ['orden', 'titulo']
