@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — Gestión</title>
-</head>
-<body>
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+{% extends "gestion/base.html" %}
 
-    <h1>Hola mundo</h1>
-    <a href="{% url 'gestion:logout' %}">Cerrar sesión</a>
-</body>
-</html>
+{% block title %}Dashboard — Gestión{% endblock %}
+
+{% block content %}
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<h1>Hola mundo</h1>
+<a href="{% url 'gestion:logout' %}">Cerrar sesión</a>
+{% endblock %}

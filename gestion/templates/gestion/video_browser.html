@@ -1,16 +1,10 @@
+{% extends "gestion/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Explorar Videos</title>
-<link rel="stylesheet" href="{% static 'css/theme.css' %}">
-<link rel="stylesheet" href="{% static 'css/video_browser.css' %}">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='11' fill='white'/><circle cx='12' cy='12' r='8' fill='black'/></svg>">
-</head>
-<body>
 
+{% block title %}Explorar Videos{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/video_browser.css' %}">{% endblock %}
+
+{% block content %}
 <header class="topbar">
     <div class="topbar-inner">
         <div class="topbar-left">
@@ -75,7 +69,6 @@
 <div class="vb-overlay" id="vb-overlay"></div>
 
 <div class="vb-layout" id="vb-layout">
-
     <aside class="vb-sidebar" id="vb-sidebar">
         <div class="vb-sidebar-head">
             <span class="vb-sidebar-title">Categorías</span>
@@ -93,7 +86,6 @@
                         animation:vb-spin 0.7s linear infinite;flex-shrink:0;"></div>
             Cargando…
         </div>
-        <!-- Lista vacía en el HTML servido. JS la puebla desde /api/videos/categorias/ -->
         <ul class="vb-cat-list" id="vb-cat-list" style="display:none"></ul>
     </aside>
 
@@ -172,7 +164,9 @@
 </div>
 
 <div class="toast-container" id="toast-container"></div>
+{% endblock %}
 
+{% block extra_js %}
 <script>
 const VB_CONFIG = {
     searchUrl:     "{% url 'gestion:video_search_proxy' %}",
@@ -183,5 +177,4 @@ const VB_CONFIG = {
 };
 </script>
 <script src="{% static 'script/video_browser.js' %}"></script>
-</body>
-</html>
+{% endblock %}

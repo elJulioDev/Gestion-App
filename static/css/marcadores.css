@@ -12,65 +12,7 @@ body {
     overflow: hidden;
 }
 
-/* ── Topbar ──────────────────────────────────────────────── */
-.topbar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    height: var(--header-h);
-    background: var(--topbar-bg);
-    border-bottom: 1px solid var(--topbar-border);
-    -webkit-backdrop-filter: var(--topbar-blur);
-    backdrop-filter: var(--topbar-blur);
-    z-index: 200;
-}
-
-.topbar-inner {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 0 16px;
-    gap: 12px;
-}
-
-.topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-.topbar-brand {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-    letter-spacing: -0.01em;
-}
-
-.topbar-center {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    max-width: 480px;
-    margin: 0 auto;
-}
-
-.topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-    margin-left: auto;
-}
-
-.topbar-divider {
-    width: 1px;
-    height: 20px;
-    background: var(--border-muted);
-    margin: 0 4px;
-}
+/* ── Topbar overrides (shared base in theme.css) ──────────── */
 
 /* Botón hamburguesa: solo visible en móvil */
 .sidebar-toggle-btn {
@@ -639,42 +581,6 @@ body.select-mode .bm-card:not(.is-selected):hover {
 .page-empty h3 { color: var(--text-muted); font-size: 15px; }
 .page-empty p { font-size: 13px; }
 
-/* ── Input with prefix ───────────────────────────────────── */
-.field-group { margin-bottom: 14px; }
-.field-group:last-child { margin-bottom: 0; }
-
-/* ── Toast ───────────────────────────────────────────────── */
-.toast-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    z-index: 9999;
-    pointer-events: none;
-}
-
-.toast {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    background: var(--surface-4);
-    border: 1px solid var(--border-default);
-    border-radius: var(--r-md);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-primary);
-    box-shadow: var(--shadow-lg);
-    animation: toast-in var(--t-spring) both;
-    pointer-events: auto;
-    white-space: nowrap;
-}
-
-.toast.is-success { border-color: var(--green-border); color: var(--green); background: var(--surface-3); }
-.toast.is-error   { border-color: var(--red-border);   color: var(--red);   background: var(--surface-3); }
-
 /* ── Sidebar: dos botones de acción por carpeta ──────────── */
 .sidebar-item-action-danger:hover {
     background: var(--red-subtle);
@@ -715,14 +621,6 @@ body.select-mode .bm-card:not(.is-selected):hover {
     .sidebar-item-action {
         display: flex;
     }
-}
-
-@keyframes toast-in {
-    from { opacity: 0; transform: translateX(12px); }
-    to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes toast-out {
-    to { opacity: 0; transform: translateX(12px); }
 }
 
 /* ═══════════════════════════════════════════════════════════

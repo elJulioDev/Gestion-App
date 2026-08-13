@@ -1,26 +1,15 @@
+{% extends "gestion/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión · Iniciar sesión</title>
-    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='11' fill='white'/><circle cx='12' cy='12' r='8' fill='black'/></svg>">
-</head>
-<body>
 
+{% block title %}Gestión · Iniciar sesión{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/login.css' %}">{% endblock %}
+
+{% block content %}
 <main class="login-page">
-    <!-- ── Zona central ───────────────────────────────────── -->
     <div class="login-main">
-
-        <!-- Título -->
         <h1 class="login-heading">Iniciar sesión</h1>
 
-        <!-- Tarjeta del formulario -->
         <div class="login-card">
-
             {% if messages %}
                 {% for message in messages %}
                 <div class="login-error" role="alert">
@@ -34,57 +23,32 @@
 
             <form method="post" action="{% url 'gestion:login' %}" novalidate>
                 {% csrf_token %}
-
-                <!-- Usuario -->
                 <div class="login-field">
                     <label class="login-label" for="username">Usuario</label>
-                    <input
-                        class="login-input"
-                        type="text"
-                        id="username"
-                        name="username"
-                        placeholder="nombre de usuario"
-                        autocomplete="username"
-                        autocapitalize="none"
-                        spellcheck="false"
-                        required
-                        autofocus
-                        value="{{ request.POST.username }}">
+                    <input class="login-input" type="text" id="username" name="username"
+                           placeholder="nombre de usuario" autocomplete="username"
+                           autocapitalize="none" spellcheck="false" required autofocus
+                           value="{{ request.POST.username }}">
                 </div>
-
-                <!-- Contraseña -->
                 <div class="login-field">
                     <label class="login-label" for="password">Contraseña</label>
-                    <input
-                        class="login-input"
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="••••••••"
-                        autocomplete="current-password"
-                        required>
+                    <input class="login-input" type="password" id="password" name="password"
+                           placeholder="••••••••" autocomplete="current-password" required>
                 </div>
-
                 <button class="login-submit" type="submit">Ingresar</button>
             </form>
+        </div>
+    </div>
 
-        </div><!-- /.login-card -->
-
-    </div><!-- /.login-main -->
-
-    <!-- ── Footer inferior ────────────────────────────────── -->
     <footer class="login-bottom">
         <div class="login-bottom-left">
             <span>Inicio administracion</span>
         </div>
-
         <div class="login-bottom-right">
             <span>Sistema de Gestión</span>
             <span class="sep">·</span>
             <span>© {% now "Y" %}</span>
         </div>
     </footer>
-
 </main>
-</body>
-</html>
+{% endblock %}

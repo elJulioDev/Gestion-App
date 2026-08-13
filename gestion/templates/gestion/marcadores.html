@@ -1,22 +1,17 @@
+{% extends "gestion/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marcadores</title>
-<link rel="stylesheet" href="{% static 'css/theme.css' %}">
+
+{% block title %}Marcadores{% endblock %}
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/marcadores.css' %}">
 <link rel="stylesheet" href="{% static 'css/video-cards.css' %}">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='11' fill='white'/><circle cx='12' cy='12' r='8' fill='black'/></svg>">
-</head>
-<body>
+{% endblock %}
 
+{% block content %}
 <!-- ── Topbar ─────────────────────────────────────────────── -->
 <header class="topbar">
     <div class="topbar-inner">
         <div class="topbar-left">
-            <!-- Botón hamburguesa (solo móvil) -->
             <button class="btn btn-ghost btn-icon sidebar-toggle-btn" id="sidebar-toggle" type="button" title="Menú">
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
                     <path d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75zM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5z"/>
@@ -37,7 +32,6 @@
         </div>
 
         <div class="topbar-right">
-            <!-- Botón búsqueda móvil -->
             <button class="btn btn-ghost btn-icon mobile-search-btn" id="mobile-search-btn" type="button" title="Buscar">
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04zm-5.68.26a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/></svg>
             </button>
@@ -131,18 +125,14 @@
                 {% for m in c.marcadores.all %}
 
                     {% if m.icono and 'google.com/s2/favicons' not in m.icono %}
-                    {# Tarjeta con miniatura #}
                     <a href="{{ m.url }}" target="_blank" rel="noopener"
                        class="bm-card is-video" data-id="{{ m.id }}" data-folder="{{ c.id }}">
-
                         <div class="bm-check">
                             <svg width="9" height="9" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0z"/></svg>
                         </div>
-
                         <div class="bm-thumb-wrap">
                             <img class="bm-thumb" src="{{ m.icono }}" alt="{{ m.titulo }}" loading="lazy">
                         </div>
-
                         <div class="bm-video-footer">
                             <span class="bm-title">{{ m.titulo }}</span>
                             <div class="bm-actions">
@@ -166,17 +156,13 @@
                     </a>
 
                     {% else %}
-                    {# Marcador normal #}
                     <a href="{{ m.url }}" target="_blank" rel="noopener"
                        class="bm-card" data-id="{{ m.id }}" data-folder="{{ c.id }}">
-
                         <div class="bm-check">
                             <svg width="9" height="9" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0z"/></svg>
                         </div>
-
                         <img class="bm-favicon" src="{{ m.icono }}" alt="" loading="lazy">
                         <span class="bm-title">{{ m.titulo }}</span>
-
                         <div class="bm-actions">
                             <button class="bm-action-btn bm-edit"
                                     data-edit-bm="{{ m.id }}"
@@ -230,14 +216,12 @@
             <span>Seleccionar todo</span>
         </button>
         <div class="bulk-bar-sep"></div>
-
         <button class="btn btn-primary btn-sm" id="bulk-move-btn" type="button">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8.22 2.97a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06l2.97-2.97H1.75a.75.75 0 0 1 0-1.5h9.44L8.22 4.03a.75.75 0 0 1 0-1.06Z"/>
             </svg>
             Mover
         </button>
-
         <button class="btn btn-danger btn-sm" id="bulk-delete-btn" type="button">
             Eliminar selección
         </button>
@@ -254,12 +238,10 @@
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
             </button>
         </div>
-
         <div style="display:flex;gap:0;padding:0 20px;border-bottom:1px solid var(--border-muted);margin-bottom:0;">
             <button class="tab is-active" data-tab="bm" id="tab-bm" type="button">Marcador</button>
             <button class="tab" data-tab="folder" id="tab-folder" type="button">Carpeta</button>
         </div>
-
         <div class="modal-body">
             <div id="content-bm">
                 <div class="field-group">
@@ -277,7 +259,6 @@
                     </select>
                 </div>
             </div>
-
             <div id="content-folder" style="display:none">
                 <div class="field-group">
                     <label class="label" for="folder-nombre">Nombre de la carpeta</label>
@@ -285,7 +266,6 @@
                 </div>
             </div>
         </div>
-
         <div class="modal-footer">
             <button class="btn btn-secondary" id="modal-cancel" type="button">Cancelar</button>
             <button class="btn btn-primary" id="modal-save" type="button">Guardar</button>
@@ -403,6 +383,7 @@
     </div>
 </div>
 
+<!-- ── Modal Mover marcadores ─────────────────────────────── -->
 <div class="modal-backdrop" id="bulk-move-backdrop">
     <div class="modal modal-sm">
         <div class="modal-header">
@@ -461,6 +442,8 @@
 <div class="toast-container" id="toast-container"></div>
 
 {% csrf_token %}
+{% endblock %}
+
+{% block extra_js %}
 <script src="{% static 'script/marcadores.js' %}"></script>
-</body>
-</html>
+{% endblock %}

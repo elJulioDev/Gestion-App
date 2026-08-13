@@ -1,83 +1,33 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='11' fill='white'/><circle cx='12' cy='12' r='8' fill='black'/></svg>">
-    <title>Reproductor</title>
-    <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #000;
-    overflow: hidden;
-}
+{% extends "gestion/base.html" %}
+{% load static %}
 
-/* Iframe ocupa el viewport real, ignorando barras del browser */
-#video-iframe {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block;
-}
+{% block title %}Reproductor{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/reproductor.css' %}">{% endblock %}
 
-.btn-back {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 10;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    transition: background 0.2s, transform 0.2s;
-}
+{% block content %}
+<button class="btn-back" onclick="history.back()" title="Cerrar reproductor">
+    <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/>
+    </svg>
+</button>
 
-.btn-back:hover {
-    background: rgba(248, 81, 73, 0.9);
-    transform: scale(1.05);
-}
-        }
-    </style>
-</head>
-<body>
-    <button class="btn-back" onclick="history.back()" title="Cerrar reproductor">
-        <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/>
-        </svg>
-    </button>
+<iframe id="video-iframe"
+        src="{{ embed_url }}"
+        allowfullscreen
+        allow="autoplay; fullscreen; picture-in-picture"
+        frameborder="0"
+        scrolling="no">
+</iframe>
+{% endblock %}
 
-    <iframe id="video-iframe"
-            src="{{ embed_url }}"
-            allowfullscreen
-            allow="autoplay; fullscreen; picture-in-picture"
-            frameborder="0"
-            scrolling="no">
-    </iframe>
-
-    <script>
-        // Dar foco inmediato al iframe para facilitar el autoplay
-        window.onload = () => {
-            const iframe = document.getElementById('video-iframe');
-            if(iframe.contentWindow) iframe.focus();
-        };
-
-        // Escuchar la tecla escape para volver atrás
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') history.back();
-        });
-    </script>
-</body>
-</html>
+{% block extra_js %}
+<script>
+    window.onload = () => {
+        const iframe = document.getElementById('video-iframe');
+        if(iframe.contentWindow) iframe.focus();
+    };
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') history.back();
+    });
+</script>
+{% endblock %}
