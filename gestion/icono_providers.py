@@ -32,7 +32,9 @@ def _proveedor_video(url, cfg):
     })
 
     with urllib.request.urlopen(req, timeout=4) as resp:
-        data = json.loads(resp.read().decode())
+        raw = resp.read()
+        charset = resp.headers.get_content_charset() or 'utf-8'
+        data = json.loads(raw.decode(charset))
 
     if isinstance(data, list) or data.get('error'):
         return None
