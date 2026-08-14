@@ -95,6 +95,12 @@
                 <span class="count-bubble">{{ total }}</span>
             </div>
 
+            <div class="sidebar-item sidebar-item-fav" data-folder="favoritos">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
+                <span class="sidebar-item-name">Favoritos</span>
+                <span class="count-bubble">{{ favoritos }}</span>
+            </div>
+
             {% for c in carpetas %}
             <div class="sidebar-item" data-folder="{{ c.id }}">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"/></svg>
@@ -139,7 +145,7 @@
 
                     {% if m.icono and 'google.com/s2/favicons' not in m.icono %}
                     <a href="{{ m.url }}" target="_blank" rel="noopener"
-                       class="bm-card is-video" data-id="{{ m.id }}" data-folder="{{ c.id }}">
+                       class="bm-card is-video{% if m.favorito %} is-fav{% endif %}" data-id="{{ m.id }}" data-folder="{{ c.id }}" {% if m.favorito %}data-fav="1"{% endif %}>
                         <div class="bm-check">
                             <svg width="9" height="9" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0z"/></svg>
                         </div>
@@ -149,6 +155,12 @@
                         <div class="bm-video-footer">
                             <span class="bm-title">{{ m.titulo }}</span>
                             <div class="bm-actions">
+                                <button class="bm-action-btn bm-fav{% if m.favorito %} is-fav{% endif %}"
+                                        data-fav-bm="{{ m.id }}"
+                                        title="Marcar como favorito">
+                                    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
+                                </button>
+                                <div class="bm-actions-sep"></div>
                                 <button class="bm-action-btn bm-edit"
                                         data-edit-bm="{{ m.id }}"
                                         data-titulo="{{ m.titulo }}"
@@ -170,13 +182,19 @@
 
                     {% else %}
                     <a href="{{ m.url }}" target="_blank" rel="noopener"
-                       class="bm-card" data-id="{{ m.id }}" data-folder="{{ c.id }}">
+                       class="bm-card{% if m.favorito %} is-fav{% endif %}" data-id="{{ m.id }}" data-folder="{{ c.id }}" {% if m.favorito %}data-fav="1"{% endif %}>
                         <div class="bm-check">
                             <svg width="9" height="9" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0z"/></svg>
                         </div>
                         <img class="bm-favicon" src="{{ m.icono }}" alt="" loading="lazy">
                         <span class="bm-title">{{ m.titulo }}</span>
                         <div class="bm-actions">
+                            <button class="bm-action-btn bm-fav{% if m.favorito %} is-fav{% endif %}"
+                                    data-fav-bm="{{ m.id }}"
+                                    title="Marcar como favorito">
+                                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
+                            </button>
+                            <div class="bm-actions-sep"></div>
                             <button class="bm-action-btn bm-edit"
                                     data-edit-bm="{{ m.id }}"
                                     data-titulo="{{ m.titulo }}"

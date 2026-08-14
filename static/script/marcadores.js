@@ -123,11 +123,19 @@ $$('.sidebar-item[data-folder]').forEach(item => {
         $$('.sidebar-item').forEach(i => i.classList.remove('active'));
         item.classList.add('active');
         const folder = item.dataset.folder;
-        $$('.bm-section').forEach(s => {
-            s.classList.toggle('is-hidden', folder !== 'all' && s.dataset.section !== folder);
-        });
 
-        // En móvil: cierra el sidebar al seleccionar carpeta
+        if (folder === 'favoritos') {
+            $$('.bm-section').forEach(s => s.classList.remove('is-hidden'));
+            $$('.bm-card').forEach(c => {
+                c.classList.toggle('is-hidden', !c.dataset.fav);
+            });
+        } else {
+            $$('.bm-section').forEach(s => {
+                s.classList.toggle('is-hidden', folder !== 'all' && s.dataset.section !== folder);
+            });
+            $$('.bm-card.is-hidden').forEach(c => c.classList.remove('is-hidden'));
+        }
+
         if (isMobile()) closeSidebar();
     });
 });
@@ -343,6 +351,27 @@ document.addEventListener('click', async e => {
         e.preventDefault();
         e.stopPropagation();
         openDelBmModal(delBm.dataset.delBm, delBm.dataset.titulo);
+        return;
+    }
+
+    /* ── Favorito ── */
+    const favBtn = e.target.closest('[data-fav-bm]');
+    if (favBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = favBtn.dataset.favBm;
+        const r = await post(`/marcadores/${id}/favorito/`, {});
+        if (r.ok) {
+            favBtn.classList.toggle('is-fav', r.favorito);
+            const card = favBtn.closest('.bm-card');
+            if (card) {
+                card.classList.toggle('is-fav', r.favorito);
+                card.dataset.fav = r.favorito ? '1' : '';
+            }
+            const favCount = $$('.bm-card.is-fav, .bm-card[data-fav="1"]').length;
+            const sidebarFav = $('.sidebar-item-fav .count-bubble');
+            if (sidebarFav) sidebarFav.textContent = favCount;
+        }
         return;
     }
 

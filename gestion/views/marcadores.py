@@ -32,6 +32,7 @@ def marcadores_view(request):
         'carpetas': carpetas,
         'marcadores': marcadores_qs,
         'total': marcadores_qs.count(),
+        'favoritos': Marcador.objects.filter(usuario=request.user, eliminado=False, favorito=True).count(),
     })
 
 @login_required(login_url='gestion:login')
@@ -193,3 +194,11 @@ def eliminar_definitivo(request, pk):
     m = get_object_or_404(Marcador, pk=pk, usuario=request.user, eliminado=True)
     m.delete()
     return JsonResponse({'ok': True})
+
+@login_required(login_url='gestion:login')
+@require_POST
+def toggle_favorito(request, pk):
+    m = get_object_or_404(Marcador, pk=pk, usuario=request.user, eliminado=False)
+    m.favorito = not m.favorito
+    m.save(update_fields=['favorito'])
+    return JsonResponse({'ok': True, 'favorito': m.favorito})

@@ -58,6 +58,7 @@ class Marcador(models.Model):
     creado = models.DateTimeField(auto_now_add=True)
     eliminado = models.BooleanField(default=False, help_text='Soft-delete: video no disponible en el proveedor')
     verificado = models.BooleanField(default=False, help_text='True si ya se verificó que el icono/URL es válido')
+    favorito = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['orden', 'titulo']

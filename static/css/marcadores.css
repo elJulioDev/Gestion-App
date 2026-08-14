@@ -262,6 +262,14 @@ body {
     display: none;
 }
 
+/* Favoritos: estrella ámbar */
+.sidebar-item-fav svg {
+    color: var(--amber, #f59e0b);
+}
+.sidebar-item-fav.active svg {
+    color: var(--amber, #f59e0b);
+}
+
 .sidebar-empty {
     font-size: 12px;
     color: var(--text-subtle);
@@ -427,6 +435,18 @@ body {
 .bm-action-btn.bm-delete:hover {
     background: var(--red-emphasis);
     color: #fff;
+}
+
+/* Favorito: ámbar siempre visible */
+.bm-action-btn.bm-fav {
+    color: var(--text-muted);
+}
+.bm-action-btn.bm-fav:hover {
+    background: var(--amber-emphasis, #f59e0b33);
+    color: var(--amber, #f59e0b);
+}
+.bm-action-btn.bm-fav.is-fav {
+    color: var(--amber, #f59e0b);
 }
 
 /* ══════════════════════════════════════════════════════════

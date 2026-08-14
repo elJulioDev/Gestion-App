@@ -17,6 +17,7 @@ urlpatterns = [
     path('marcadores/<int:pk>/eliminar/', views.eliminar_marcador, name='eliminar_marcador'),
     path('marcadores/<int:pk>/editar/', views.editar_marcador, name='editar_marcador'),
     path('marcadores/<int:pk>/mover/', views.mover_marcador, name='mover_marcador'),
+    path('marcadores/<int:pk>/favorito/', views.toggle_favorito, name='toggle_favorito'),
     path('marcadores/papelera/', views.papelera_view, name='papelera'),
     path('marcadores/<int:pk>/restaurar/', views.restaurar_marcador, name='restaurar_marcador'),
     path('marcadores/<int:pk>/eliminar-definitivo/', views.eliminar_definitivo, name='eliminar_definitivo'),
