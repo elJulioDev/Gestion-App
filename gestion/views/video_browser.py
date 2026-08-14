@@ -3,6 +3,7 @@ import requests
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 
 from gestion.models import Carpeta, CategoriaBrowser, ProveedorConfig
 
@@ -114,3 +115,24 @@ def video_search_proxy(request):
         return JsonResponse({"ok": False, "error": str(e)}, status=502)
     except Exception:
         return JsonResponse({"ok": False, "error": "Error inesperado"}, status=500)
+
+
+@login_required(login_url="gestion:login")
+@require_POST
+def fetch_video_title(request):
+    url = request.POST.get("url", "").strip()
+    if not url:
+        return JsonResponse({"ok": False, "error": "URL requerida"}, status=400)
+
+    try:
+        from gestion.icono_providers import _proveedor_video
+        from gestion.models import ProveedorConfig
+        cfg = ProveedorConfig.load()
+        data = _proveedor_video(url, cfg)
+        if not data:
+            return JsonResponse({"ok": False, "error": "Video no encontrado o eliminado"})
+        return JsonResponse({"ok": True, "title": data.get("title", "")})
+    except ValueError:
+        return JsonResponse({"ok": False, "error": "URL no válida"}, status=400)
+    except Exception:
+        return JsonResponse({"ok": False, "error": "Error al obtener título"}, status=502)

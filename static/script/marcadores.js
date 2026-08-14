@@ -205,6 +205,28 @@ $('#modal-save').addEventListener('click', async () => {
     }
 });
 
+/* ── Auto-obtener título al pegar URL ────────────────────── */
+let fetchTitleTimer = null;
+$('#bm-url').addEventListener('input', () => {
+    clearTimeout(fetchTitleTimer);
+    const url = $('#bm-url').value.trim();
+    if (!url) return;
+
+    fetchTitleTimer = setTimeout(async () => {
+        try {
+            const r = await fetch('/api/videos/fetch-title/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrf },
+                body: new URLSearchParams({ url }),
+            });
+            const data = await r.json();
+            if (data.ok && data.title && !$('#bm-titulo').value.trim()) {
+                $('#bm-titulo').value = data.title;
+            }
+        } catch {}
+    }, 600);
+});
+
 /* ══════════════════════════════════════════════════════════
    Modal Editar marcador
    ══════════════════════════════════════════════════════════ */
