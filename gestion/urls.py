@@ -32,3 +32,11 @@ urlpatterns += [
     path('api/videos/provider-config/', provider_config_view, name='provider_config'),
     path('api/videos/fetch-title/', fetch_video_title, name='fetch_video_title'),
 ]
+
+from .views.galeria import gallery_view, gallery_profile_proxy, gallery_posts_proxy, gallery_config_view
+urlpatterns += [
+    path('galeria/<str:service>/<str:creator_id>/', gallery_view, name='gallery'),
+    path('api/galeria/<str:service>/<str:creator_id>/profile/', gallery_profile_proxy, name='gallery_profile_proxy'),
+    path('api/galeria/<str:service>/<str:creator_id>/posts/', gallery_posts_proxy, name='gallery_posts_proxy'),
+    path('api/galeria/config/', gallery_config_view, name='gallery_config'),
+]

@@ -691,6 +691,19 @@ fetch('/api/videos/provider-config/', {
 })
 .catch(() => {});
 
+// Obtener patrón de galería desde el servidor
+let GALLERY_RE = null;
+fetch('/api/galeria/config/', {
+    headers: { 'X-CSRFToken': csrf }
+})
+.then(r => r.json())
+.then(data => {
+    if (data.ok && data.url_pattern) {
+        GALLERY_RE = new RegExp(data.url_pattern, 'i');
+    }
+})
+.catch(() => {});
+
 // Interceptar clic en cards de video reconocidos
 document.addEventListener('click', e => {
     if (!VIDEO_EXT_RE) return;
@@ -705,4 +718,20 @@ document.addEventListener('click', e => {
 
     e.preventDefault();
     window.location.href = `/video/${match[1]}/`;
+}, true);
+
+// Interceptar clic en cards de galería → vista local
+document.addEventListener('click', e => {
+    if (!GALLERY_RE) return;
+    if (document.body.classList.contains('select-mode')) return;
+    if (e.target.closest('.bm-action-btn')) return;
+
+    const card = e.target.closest('.bm-card');
+    if (!card) return;
+
+    const match = GALLERY_RE.exec(card.href);
+    if (!match) return;
+
+    e.preventDefault();
+    window.location.href = `/galeria/${match[1]}/${match[2]}/`;
 }, true);

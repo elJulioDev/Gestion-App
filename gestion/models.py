@@ -98,3 +98,30 @@ class CategoriaBrowser(models.Model):
 
     def __str__(self):
         return self.nombre
+
+
+class GaleriaConfig(models.Model):
+    """
+    Configuración del proveedor de galería de imágenes.
+    Singleton: solo debe existir un registro (pk=1).
+    """
+    api_url = models.URLField(max_length=200, help_text='URL base de la API (sin barra final)')
+    cdn_url = models.URLField(max_length=200, help_text='URL del CDN de miniaturas')
+    file_url = models.URLField(max_length=200, help_text='URL del CDN de archivos originales')
+    url_pattern = models.TextField(help_text='Regex para identificar URLs del proveedor')
+
+    class Meta:
+        verbose_name = 'configuración de galería'
+        verbose_name_plural = 'configuraciones de galería'
+
+    def __str__(self):
+        return f'Galería: {self.api_url}'
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
