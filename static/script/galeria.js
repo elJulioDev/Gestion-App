@@ -34,6 +34,7 @@ let currentOffset = 0;
 let currentQuery  = '';
 let loading       = false;
 let lbIndex       = -1;
+let lbPostIndex   = -1;
 let lbImages      = [];
 const BATCH       = 50;
 
@@ -216,6 +217,7 @@ function openLightbox(idx) {
     });
     if (!lbImages.length) return;
 
+    lbPostIndex = idx;
     lbIndex = 0;
     renderLightbox();
     lightbox.classList.add('is-open');
@@ -230,6 +232,8 @@ function closeLightbox() {
 function renderLightbox() {
     const img = lbImages[lbIndex];
     if (!img) return;
+    lbImg.style.transition = 'none';
+    lbImg.style.transform = 'translateX(0)';
     lbLoading.classList.remove('is-hidden');
     lbImg.style.opacity = '0';
     lbImg.dataset.triedThumb = '';
@@ -268,13 +272,84 @@ document.addEventListener('keydown', e => {
         searchInput.focus();
         searchInput.select();
     }
-    if (e.key === 'Escape') {
-        if (lightbox.classList.contains('is-open')) closeLightbox();
-    }
+
     if (lightbox.classList.contains('is-open')) {
-        if (e.key === 'ArrowLeft')  { if (lbIndex > 0) { lbIndex--; renderLightbox(); } }
-        if (e.key === 'ArrowRight') { if (lbIndex < lbImages.length - 1) { lbIndex++; renderLightbox(); } }
+        const k = e.key.toLowerCase();
+        if (k === 'escape') { closeLightbox(); return; }
+        if (k === 'arrowleft' || k === 'a') { if (lbIndex > 0) { lbIndex--; renderLightbox(); } }
+        if (k === 'arrowright' || k === 's') { if (lbIndex < lbImages.length - 1) { lbIndex++; renderLightbox(); } }
+        if (k === 'z' && lbPostIndex > 0) { openLightbox(lbPostIndex - 1); }
+        if (k === 'x' && lbPostIndex < allPosts.length - 1) { openLightbox(lbPostIndex + 1); }
+    } else {
+        if (e.key === 'Escape') closeLightbox();
     }
+});
+
+// ── Touch swipe (mobile) ──────────────────────────────────────
+let lbSwipeX = 0;
+let lbSwipeStartY = 0;
+let lbSwiping = false;
+let lbDirectionLocked = false;
+let lbIsHorizontal = false;
+
+lbImg.addEventListener('touchstart', e => {
+    if (lbImages.length <= 1) return;
+    const t = e.touches;
+    lbSwipeX = t[0].clientX;
+    lbSwipeStartY = t[0].clientY;
+    lbSwiping = true;
+    lbDirectionLocked = false;
+    lbIsHorizontal = false;
+    lbImg.style.transition = 'none';
+}, { passive: true });
+
+lbImg.addEventListener('touchmove', e => {
+    if (!lbSwiping) return;
+    const t = e.touches;
+    const dx = t[0].clientX - lbSwipeX;
+    const dy = t[0].clientY - lbSwipeStartY;
+
+    if (!lbDirectionLocked) {
+        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+            lbDirectionLocked = true;
+            lbIsHorizontal = Math.abs(dx) > Math.abs(dy);
+        }
+        return;
+    }
+
+    if (!lbIsHorizontal) { lbSwiping = false; return; }
+
+    e.preventDefault();
+    const atStart = lbIndex === 0 && dx > 0;
+    const atEnd = lbIndex === lbImages.length - 1 && dx < 0;
+    const clamped = dx * (atStart || atEnd ? 0.3 : 1);
+    lbImg.style.transform = `translateX(${clamped}px)`;
+}, { passive: false });
+
+lbImg.addEventListener('touchend', e => {
+    if (!lbSwiping) return;
+    lbSwiping = false;
+
+    const dx = e.changedTouches[0].clientX - lbSwipeX;
+    const threshold = 60;
+
+    if (lbIsHorizontal && Math.abs(dx) >= threshold) {
+        const dir = dx < 0 ? 1 : -1;
+        const target = lbIndex + dir;
+        if (target >= 0 && target < lbImages.length) {
+            lbImg.style.transition = 'transform 0.25s ease';
+            lbImg.style.transform = `translateX(${-dir * 300}px)`;
+            lbImg.style.opacity = '0';
+            setTimeout(() => {
+                lbIndex = target;
+                renderLightbox();
+            }, 250);
+            return;
+        }
+    }
+
+    lbImg.style.transition = 'transform 0.2s ease';
+    lbImg.style.transform = 'translateX(0)';
 });
 
 // ── Toast ─────────────────────────────────────────────────────

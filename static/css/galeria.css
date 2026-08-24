@@ -218,6 +218,7 @@ body { display: flex; flex-direction: column; }
     object-fit: contain;
     border-radius: var(--r-sm);
     transition: opacity 0.2s ease;
+    touch-action: pan-y;
 }
 
 .pw-lightbox-info {
@@ -243,5 +244,8 @@ body { display: flex; flex-direction: column; }
 }
 @media (max-width: 480px) {
     .pw-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .pw-lightbox-prev, .pw-lightbox-next { width: 36px; height: 36px; }
+    .pw-lightbox-prev, .pw-lightbox-next { display: none; }
+    .pw-lightbox-content { max-width: 100vw; max-height: none; }
+    .pw-lightbox-img { max-width: 100vw; max-height: 100dvh; border-radius: 0; width: 100vw; }
+    .pw-lightbox-info { bottom: env(safe-area-inset-bottom, 16px); }
 }
