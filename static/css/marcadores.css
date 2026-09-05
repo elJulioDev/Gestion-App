@@ -778,10 +778,23 @@ body.select-mode .bm-card:not(.is-selected):hover {
         padding: 12px;
         align-items: center;   /* centrado vertical */
     }
-    .modal, .modal.modal-sm {
+    .modal, .modal.modal-sm, .modal.modal-lg {
         max-width: 100%;
         border-radius: var(--r-lg);  /* esquinas uniformes */
         max-height: 90vh;
+    }
+
+    /* ── Duplicados móvil ── */
+    .dupe-thumb {
+        width: 28px;
+        height: 28px;
+    }
+    .dupe-item {
+        padding: 6px 10px;
+        gap: 8px;
+    }
+    .dupe-title {
+        font-size: 12px;
     }
 }
 
@@ -797,4 +810,78 @@ body.select-mode .bm-card:not(.is-selected):hover {
 /* Traer todos los marcadores con clase de video/miniatura al frente */
 .bm-card.is-video {
     order: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DUPLICADOS
+   ═══════════════════════════════════════════════════════════ */
+.dupe-group {
+    border: 1px solid var(--border-muted);
+    border-radius: var(--r-md);
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.dupe-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--surface-3);
+    border-bottom: 1px solid var(--border-muted);
+}
+
+.dupe-group-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.dupe-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background var(--t-fast);
+}
+
+.dupe-item:hover {
+    background: var(--surface-3);
+}
+
+.dupe-item:not(:last-child) {
+    border-bottom: 1px solid var(--border-muted);
+}
+
+.dupe-item .checkbox {
+    flex-shrink: 0;
+}
+
+.dupe-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--r-sm);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.dupe-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.dupe-title {
+    display: block;
+    font-size: 13px;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dupe-folder {
+    display: block;
+    font-size: 11px;
+    color: var(--text-subtle);
 }

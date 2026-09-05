@@ -669,6 +669,7 @@ document.addEventListener('keydown', e => {
             closeEditFolderModal();
             closeDelFolderModal();
             closeCheck();
+            closeBackdrop('dupes-backdrop');
         }
     }
     if (selectMode && (e.metaKey || e.ctrlKey) && e.key === 'a') {
@@ -735,3 +736,126 @@ document.addEventListener('click', e => {
     e.preventDefault();
     window.location.href = `/galeria/${match[1]}/${match[2]}/`;
 }, true);
+
+/* ══════════════════════════════════════════════════════════
+   DETECTAR DUPLICADOS
+   ══════════════════════════════════════════════════════════ */
+const dupesBtn     = $('#dupes-btn');
+const dupesBackdrop = $('#dupes-backdrop');
+const dupesList    = $('#dupes-list');
+const dupesStatus  = $('#dupes-status');
+const dupesDelete  = $('#dupes-delete');
+const dupesCloseBtn = $('#dupes-close-btn');
+
+bindClose('dupes-backdrop', 'dupes-close', 'dupes-cancel', 'dupes-close-btn');
+
+dupesBtn.addEventListener('click', async () => {
+    dupesList.innerHTML = '';
+    dupesStatus.textContent = 'Analizando marcadores…';
+    dupesStatus.style.display = '';
+    dupesDelete.style.display = 'none';
+    dupesDelete.disabled = true;
+    dupesCloseBtn.style.display = 'none';
+    openBackdrop('dupes-backdrop');
+
+    try {
+        const r = await fetch('/marcadores/duplicados/', {
+            headers: { 'X-CSRFToken': csrf }
+        }).then(res => res.json());
+
+        if (!r.ok || !r.duplicados.length) {
+            dupesStatus.textContent = r.ok
+                ? 'No se encontraron duplicados.'
+                : 'Error al detectar duplicados.';
+            dupesCloseBtn.style.display = '';
+            return;
+        }
+
+        dupesStatus.textContent =
+            `${r.total_grupos} grupo(s) con ${r.total_duplicados} duplicado(s)`;
+        dupesStatus.style.display = 'none';
+        renderDupes(r.duplicados);
+    } catch {
+        dupesStatus.textContent = 'Error de conexión.';
+        dupesCloseBtn.style.display = '';
+    }
+});
+
+function renderDupes(grupos) {
+    dupesList.innerHTML = '';
+    grupos.forEach((grupo, gi) => {
+        const groupEl = document.createElement('div');
+        groupEl.className = 'dupe-group';
+        groupEl.innerHTML = `
+            <div class="dupe-group-header">
+                <span class="dupe-group-title">Grupo ${gi + 1}</span>
+                <span class="badge badge-amber">${grupo.marcadores.length} duplicados</span>
+            </div>
+        `;
+
+        grupo.marcadores.forEach(m => {
+            const item = document.createElement('label');
+            item.className = 'dupe-item';
+            item.innerHTML = `
+                <input type="checkbox" class="checkbox dupe-cb" value="${m.id}">
+                <img class="dupe-thumb" src="${m.icono}" alt="" loading="lazy">
+                <div class="dupe-info">
+                    <span class="dupe-title">${m.titulo}</span>
+                    <span class="dupe-folder">${m.carpeta__nombre}</span>
+                </div>
+                ${m.favorito ? '<span class="badge badge-amber" style="font-size:10px">★</span>' : ''}
+            `;
+            groupEl.appendChild(item);
+        });
+
+        dupesList.appendChild(groupEl);
+    });
+
+    dupesDelete.style.display = '';
+    updateDupesDeleteBtn();
+
+    dupesList.querySelectorAll('.dupe-cb').forEach(cb => {
+        cb.addEventListener('change', updateDupesDeleteBtn);
+    });
+}
+
+function updateDupesDeleteBtn() {
+    const checked = dupesList.querySelectorAll('.dupe-cb:checked').length;
+    dupesDelete.disabled = checked === 0;
+    dupesDelete.innerHTML = checked > 0
+        ? `<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/></svg>
+            Eliminar ${checked}`
+        : `<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/></svg>
+            Eliminar seleccionados`;
+}
+
+dupesDelete.addEventListener('click', async () => {
+    const ids = [...dupesList.querySelectorAll('.dupe-cb:checked')].map(cb => cb.value);
+    if (!ids.length) return;
+
+    const btn = dupesDelete;
+    btn.disabled = true;
+    btn.textContent = 'Eliminando…';
+
+    try {
+        const r = await fetch('/marcadores/eliminar-duplicados/', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrf, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids }),
+        }).then(res => res.json());
+
+        if (r.ok) {
+            toast(`${r.eliminados} duplicado(s) eliminado(s)`);
+            closeBackdrop('dupes-backdrop');
+            location.reload();
+        } else {
+            toast(r.error || 'Error al eliminar', 'error');
+            btn.disabled = false;
+            btn.innerHTML = 'Eliminar seleccionados';
+        }
+    } catch {
+        toast('Error de conexión', 'error');
+        btn.disabled = false;
+        btn.innerHTML = 'Eliminar seleccionados';
+    }
+});

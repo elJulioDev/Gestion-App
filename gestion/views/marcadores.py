@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, QueryDict
 from django.views.decorators.http import require_POST, require_http_methods
+from collections import defaultdict
 from django.db.models import Count, Prefetch, Case, When, Value, IntegerField, Q
 from ..models import Carpeta, Marcador, ProveedorConfig
 from ..thumbnail_checker import verificar_marcadores_ids
@@ -202,3 +203,50 @@ def toggle_favorito(request, pk):
     m.favorito = not m.favorito
     m.save(update_fields=['favorito'])
     return JsonResponse({'ok': True, 'favorito': m.favorito})
+
+
+@login_required(login_url='gestion:login')
+def detectar_duplicados_view(request):
+    marcadores = Marcador.objects.filter(
+        usuario=request.user,
+        eliminado=False,
+    ).values('id', 'titulo', 'url', 'icono', 'carpeta__nombre', 'favorito', 'creado')
+
+    por_url = defaultdict(list)
+    for m in marcadores:
+        por_url[m['url']].append(m)
+
+    duplicados = [
+        {'url': url, 'marcadores': list(grupo)}
+        for url, grupo in por_url.items()
+        if len(grupo) > 1
+    ]
+    duplicados.sort(key=lambda g: -len(g['marcadores']))
+
+    return JsonResponse({
+        'ok': True,
+        'duplicados': duplicados,
+        'total_grupos': len(duplicados),
+        'total_duplicados': sum(len(g['marcadores']) - 1 for g in duplicados),
+    })
+
+
+@login_required(login_url='gestion:login')
+@require_POST
+def eliminar_duplicados_view(request):
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        data = {}
+
+    ids_a_eliminar = data.get('ids', [])
+    if not ids_a_eliminar:
+        return JsonResponse({'ok': False, 'error': 'Sin IDs'}, status=400)
+
+    eliminados = Marcador.objects.filter(
+        pk__in=ids_a_eliminar,
+        usuario=request.user,
+        eliminado=False,
+    ).delete()[0]
+
+    return JsonResponse({'ok': True, 'eliminados': eliminados})

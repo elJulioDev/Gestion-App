@@ -5,6 +5,7 @@ from .marcadores import (
     editar_marcador, eliminar_carpeta, eliminar_marcador, mover_marcador,
     reproductor_view, papelera_view, restaurar_marcador, eliminar_definitivo,
     verificar_marcadores_view, toggle_favorito,
+    detectar_duplicados_view, eliminar_duplicados_view,
 )
 from .galeria import (
     gallery_view, gallery_profile_proxy, gallery_posts_proxy, gallery_config_view,
