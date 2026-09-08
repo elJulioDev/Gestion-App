@@ -13,9 +13,7 @@
             {% if messages %}
                 {% for message in messages %}
                 <div class="login-error" role="alert">
-                    <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1zm0 1.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zm-.75 3.25h1.5v4h-1.5v-4zm0 5h1.5v1.5h-1.5v-1.5z"/>
-                    </svg>
+                    <i data-lucide="alert-circle" style="width:15px;height:15px"></i>
                     {{ message }}
                 </div>
                 {% endfor %}

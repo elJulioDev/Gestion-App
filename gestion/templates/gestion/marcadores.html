@@ -13,19 +13,17 @@
     <div class="topbar-inner">
         <div class="topbar-left">
             <button class="btn btn-ghost btn-icon sidebar-toggle-btn" id="sidebar-toggle" type="button" title="Menú">
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75zM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5z"/>
-                </svg>
+                <i data-lucide="menu" style="width:15px;height:15px"></i>
             </button>
             <span class="topbar-brand">
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 0 1 1-1h8zM5 12.25v3.25a.25.25 0 0 0 .4.2l1.45-1.087a.25.25 0 0 1 .3 0L8.6 15.7a.25.25 0 0 0 .4-.2v-3.25a.25.25 0 0 0-.25-.25h-3.5a.25.25 0 0 0-.25.25z"/></svg>
+                <i data-lucide="bookmark" style="width:15px;height:15px"></i>
                 <span>Marcadores</span>
             </span>
         </div>
 
         <div class="topbar-center">
             <div class="search-wrapper">
-                <svg class="search-icon" width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04zm-5.68.26a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/></svg>
+                <i data-lucide="search" class="search-icon" style="width:13px;height:13px"></i>
                 <input class="search-input" id="search-input" type="text" placeholder="Buscar marcador…" autocomplete="off">
                 <span class="search-kbd">⌘K</span>
             </div>
@@ -33,33 +31,29 @@
 
         <div class="topbar-right">
             <button class="btn btn-ghost btn-icon mobile-search-btn" id="mobile-search-btn" type="button" title="Buscar">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04zm-5.68.26a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/></svg>
+                <i data-lucide="search" style="width:14px;height:14px"></i>
             </button>
             <button class="btn btn-ghost btn-sm" id="select-mode-btn" type="button" title="Selección múltiple">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25H2.75zM1 3.75C1 2.784 1.784 2 2.75 2h10.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 14H2.75A1.75 1.75 0 0 1 1 12.25v-8.5zm10.78 3.03a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L5.97 9.59a.75.75 0 1 1 1.06-1.06L8 9.5l2.72-2.72a.75.75 0 0 1 1.06 0z"/></svg>
+                <i data-lucide="check-square" style="width:13px;height:13px"></i>
                 <span>Seleccionar</span>
             </button>
             <button class="btn btn-primary btn-sm" id="add-btn" type="button">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2z"/></svg>
+                <i data-lucide="plus" style="width:13px;height:13px"></i>
                 <span>Añadir</span>
             </button>
             <a href="{% url 'gestion:video_browser' %}" class="btn btn-ghost btn-sm" title="Explorar videos">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M16 3.75v8.5a.75.75 0 0 1-1.136.643L11 10.575v.675A1.75 1.75 0 0 1 9.25 13h-7.5A1.75 1.75 0 0 1 0 11.25v-6.5C0 3.784.784 3 1.75 3h7.5c.966 0 1.75.784 1.75 1.75v.675l3.864-2.318A.75.75 0 0 1 16 3.75zm-6.5 1a.25.25 0 0 0-.25-.25h-7.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-6.5zM11 8.825l3.5 2.1v-5.85l-3.5 2.1v1.65z"/>
-                </svg>
+                <i data-lucide="play" style="width:13px;height:13px"></i>
                 <span>Videos</span>
             </a>
             <a href="{% url 'gestion:papelera' %}" class="btn btn-ghost btn-sm" title="Papelera">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/>
-                </svg>
+                <i data-lucide="trash-2" style="width:13px;height:13px"></i>
                 <span>Papelera</span>
             </a>
             <div class="topbar-divider"></div>
             <form method="post" action="{% url 'gestion:logout' %}" style="display:inline">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-ghost btn-sm" title="Cerrar sesión">
-                    <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2 2.75C2 1.784 2.784 1 3.75 1h4a.75.75 0 0 1 0 1.5h-4a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h4a.75.75 0 0 1 0 1.5h-4A1.75 1.75 0 0 1 2 13.25V2.75zm9.44 4.5-1.97-1.97a.75.75 0 0 1 1.06-1.06l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 1 1-1.06-1.06l1.97-1.97H6.75a.75.75 0 0 1 0-1.5z"/></svg>
+                    <i data-lucide="log-out" style="width:13px;height:13px"></i>
                     <span class="logout-label">Salir</span>
                 </button>
             </form>
@@ -70,10 +64,10 @@
 <!-- ── Barra de búsqueda móvil (desplegable) ──────────────── -->
 <div class="mobile-search-bar" id="mobile-search-bar">
     <div class="mobile-search-inner">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style="color:var(--text-subtle);flex-shrink:0"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04zm-5.68.26a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/></svg>
+        <i data-lucide="search" style="width:13px;height:13px;color:var(--text-subtle);flex-shrink:0"></i>
         <input class="mobile-search-input" id="mobile-search-input" type="text" placeholder="Buscar marcador…" autocomplete="off">
         <button class="btn btn-ghost btn-icon" id="mobile-search-close" type="button">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+            <i data-lucide="x" style="width:13px;height:13px"></i>
         </button>
     </div>
 </div>
@@ -90,31 +84,31 @@
             <div class="sidebar-section-label">Carpetas</div>
 
             <div class="sidebar-item active" data-folder="all">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"/></svg>
+                <i data-lucide="folder" style="width:13px;height:13px"></i>
                 <span class="sidebar-item-name">Todos</span>
                 <span class="count-bubble">{{ total }}</span>
             </div>
 
             <div class="sidebar-item sidebar-item-fav" data-folder="favoritos">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
+                <i data-lucide="star" style="width:13px;height:13px"></i>
                 <span class="sidebar-item-name">Favoritos</span>
                 <span class="count-bubble">{{ favoritos }}</span>
             </div>
 
             {% for c in carpetas %}
             <div class="sidebar-item" data-folder="{{ c.id }}">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"/></svg>
+                <i data-lucide="folder" style="width:13px;height:13px"></i>
                 <span class="sidebar-item-name">{{ c.nombre }}</span>
                 <span class="count-bubble">{{ c.total }}</span>
                 
                 <button class="sidebar-item-action" data-edit-folder="{{ c.id }}" data-nombre="{{ c.nombre }}"
                     title="Renombrar carpeta">
-                    <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354z"/></svg>
+                    <i data-lucide="pencil" style="width:10px;height:10px"></i>
                 </button>
                 
                 <button class="sidebar-item-action sidebar-item-action-danger" data-del-folder="{{ c.id }}"
                         title="Eliminar carpeta">
-                    <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+                    <i data-lucide="x" style="width:10px;height:10px"></i>
                 </button>
             </div>
             {% empty %}
@@ -122,11 +116,11 @@
             {% endfor %}
         </nav>
         <button class="sidebar-check-btn" id="check-btn" type="button" title="Comprobar si los videos guardados siguen disponibles en el proveedor">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.75a.75.75 0 0 1 .75.75v6.19l2.28-2.28a.75.75 0 1 1 1.06 1.06L8 10.56 4.91 7.47a.75.75 0 0 1 1.06-1.06l2.28 2.28V2.5A.75.75 0 0 1 8 1.75zM2.75 9.25a.75.75 0 0 1 .75.75v2.25c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V10a.75.75 0 0 1 1.5 0v2.25A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25V10a.75.75 0 0 1 .75-.75z"/></svg>
+            <i data-lucide="download" style="width:13px;height:13px"></i>
             <span>Verificar videos borrados</span>
         </button>
         <button class="sidebar-check-btn" id="dupes-btn" type="button" title="Detectar marcadores duplicados por URL">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c.621 0 1.213.322 1.565.845l.697 1.024a.25.25 0 0 0 .205.111h5.542A1.75 1.75 0 0 1 14.5 4.75v8.5A1.75 1.75 0 0 1 12.75 15H3.25A1.75 1.75 0 0 1 1.5 13.25V4.75a.75.75 0 0 1 1.5 0v8.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25H7.398a1.75 1.75 0 0 1-1.41-.711l-.697-1.024A1.75 1.75 0 0 0 4.253 2.5H.75a.75.75 0 0 1-.75-.75z"/></svg>
+            <i data-lucide="copy" style="width:13px;height:13px"></i>
             <span>Detectar duplicados</span>
         </button>
     </aside>
@@ -138,7 +132,7 @@
         <section class="bm-section" data-section="{{ c.id }}">
             <div class="bm-section-header">
                 <div class="bm-section-title">
-                    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"/></svg>
+                    <i data-lucide="folder" style="width:12px;height:12px"></i>
                     {{ c.nombre }}
                 </div>
                 <span class="count-bubble">{{ c.total }}</span>
@@ -151,7 +145,7 @@
                     <a href="{{ m.url }}" target="_blank" rel="noopener"
                        class="bm-card is-video{% if m.favorito %} is-fav{% endif %}" data-id="{{ m.id }}" data-folder="{{ c.id }}" {% if m.favorito %}data-fav="1"{% endif %}>
                         <div class="bm-check">
-                            <svg width="9" height="9" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0z"/></svg>
+                            <i data-lucide="check" style="width:9px;height:9px"></i>
                         </div>
                         <div class="bm-thumb-wrap">
                             <img class="bm-thumb" src="{{ m.icono }}" alt="{{ m.titulo }}" loading="lazy">
@@ -162,7 +156,7 @@
                                 <button class="bm-action-btn bm-fav{% if m.favorito %} is-fav{% endif %}"
                                         data-fav-bm="{{ m.id }}"
                                         title="Marcar como favorito">
-                                    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
+                                    <i data-lucide="star" style="width:12px;height:12px"></i>
                                 </button>
                                 <div class="bm-actions-sep"></div>
                                 <button class="bm-action-btn bm-edit"
@@ -171,14 +165,14 @@
                                         data-url="{{ m.url }}"
                                         data-carpeta="{{ c.id }}"
                                         title="Editar marcador">
-                                    <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354z"/></svg>
+                                    <i data-lucide="pencil" style="width:11px;height:11px"></i>
                                 </button>
                                 <div class="bm-actions-sep"></div>
                                 <button class="bm-action-btn bm-delete"
                                         data-del-bm="{{ m.id }}"
                                         data-titulo="{{ m.titulo }}"
                                         title="Eliminar marcador">
-                                    <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/></svg>
+                                    <i data-lucide="trash-2" style="width:11px;height:11px"></i>
                                 </button>
                             </div>
                         </div>
@@ -188,7 +182,7 @@
                     <a href="{{ m.url }}" target="_blank" rel="noopener"
                        class="bm-card{% if m.favorito %} is-fav{% endif %}" data-id="{{ m.id }}" data-folder="{{ c.id }}" {% if m.favorito %}data-fav="1"{% endif %}>
                         <div class="bm-check">
-                            <svg width="9" height="9" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0z"/></svg>
+                            <i data-lucide="check" style="width:9px;height:9px"></i>
                         </div>
                         <img class="bm-favicon" src="{{ m.icono }}" alt="" loading="lazy">
                         <span class="bm-title">{{ m.titulo }}</span>
@@ -196,7 +190,7 @@
                             <button class="bm-action-btn bm-fav{% if m.favorito %} is-fav{% endif %}"
                                     data-fav-bm="{{ m.id }}"
                                     title="Marcar como favorito">
-                                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
+                                <i data-lucide="star" style="width:12px;height:12px"></i>
                             </button>
                             <div class="bm-actions-sep"></div>
                             <button class="bm-action-btn bm-edit"
@@ -205,14 +199,14 @@
                                     data-url="{{ m.url }}"
                                     data-carpeta="{{ c.id }}"
                                     title="Editar marcador">
-                                <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354z"/></svg>
+                                <i data-lucide="pencil" style="width:11px;height:11px"></i>
                             </button>
                             <div class="bm-actions-sep"></div>
                             <button class="bm-action-btn bm-delete"
                                     data-del-bm="{{ m.id }}"
                                     data-titulo="{{ m.titulo }}"
                                     title="Eliminar marcador">
-                                <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/></svg>
+                                <i data-lucide="trash-2" style="width:11px;height:11px"></i>
                             </button>
                         </div>
                     </a>
@@ -225,14 +219,14 @@
         </section>
         {% empty %}
         <div class="page-empty">
-            <svg width="40" height="40" viewBox="0 0 16 16" fill="currentColor" style="opacity:.25"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"/></svg>
+            <i data-lucide="folder-open" style="width:40px;height:40px;opacity:.25"></i>
             <h3>Sin carpetas</h3>
             <p>Crea una con el botón "Añadir"</p>
         </div>
         {% endfor %}
 
         <div id="no-results" class="page-empty" style="display:none">
-            <svg width="36" height="36" viewBox="0 0 16 16" fill="currentColor" style="opacity:.25"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04zm-5.68.26a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/></svg>
+            <i data-lucide="search-x" style="width:36px;height:36px;opacity:.25"></i>
             <h3>Sin resultados</h3>
             <p>Intenta con otro término</p>
         </div>
@@ -252,9 +246,7 @@
         </button>
         <div class="bulk-bar-sep"></div>
         <button class="btn btn-primary btn-sm" id="bulk-move-btn" type="button">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8.22 2.97a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06l2.97-2.97H1.75a.75.75 0 0 1 0-1.5h9.44L8.22 4.03a.75.75 0 0 1 0-1.06Z"/>
-            </svg>
+            <i data-lucide="arrow-right" style="width:12px;height:12px"></i>
             Mover
         </button>
         <button class="btn btn-danger btn-sm" id="bulk-delete-btn" type="button">
@@ -270,7 +262,7 @@
         <div class="modal-header">
             <span class="modal-title" id="modal-title">Añadir</span>
             <button class="modal-close" id="modal-close" type="button">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+                <i data-lucide="x" style="width:16px;height:16px"></i>
             </button>
         </div>
         <div style="display:flex;gap:0;padding:0 20px;border-bottom:1px solid var(--border-muted);margin-bottom:0;">
@@ -314,7 +306,7 @@
         <div class="modal-header">
             <span class="modal-title">Editar marcador</span>
             <button class="modal-close" id="edit-close" type="button">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+                <i data-lucide="x" style="width:16px;height:16px"></i>
             </button>
         </div>
         <div class="modal-body">
@@ -347,12 +339,12 @@
         <div class="modal-header">
             <span class="modal-title">Eliminar marcador</span>
             <button class="modal-close" id="del-bm-close" type="button">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+                <i data-lucide="x" style="width:16px;height:16px"></i>
             </button>
         </div>
         <div class="modal-body">
             <div class="modal-confirm-icon modal-confirm-icon--danger">
-                <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/></svg>
+                <i data-lucide="trash-2" style="width:20px;height:20px"></i>
             </div>
             <p class="modal-confirm-text">¿Eliminar <strong id="del-bm-nombre"></strong>?</p>
             <p class="modal-confirm-sub">Esta acción no se puede deshacer.</p>
@@ -361,7 +353,7 @@
         <div class="modal-footer">
             <button class="btn btn-secondary" id="del-bm-cancel" type="button">Cancelar</button>
             <button class="btn btn-danger" id="del-bm-confirm" type="button">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/></svg>
+                <i data-lucide="trash-2" style="width:13px;height:13px"></i>
                 Eliminar
             </button>
         </div>
@@ -374,7 +366,7 @@
         <div class="modal-header">
             <span class="modal-title">Renombrar carpeta</span>
             <button class="modal-close" id="edit-folder-close" type="button">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+                <i data-lucide="x" style="width:16px;height:16px"></i>
             </button>
         </div>
         <div class="modal-body">
@@ -397,12 +389,12 @@
         <div class="modal-header">
             <span class="modal-title">Eliminar carpeta</span>
             <button class="modal-close" id="del-folder-close" type="button">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+                <i data-lucide="x" style="width:16px;height:16px"></i>
             </button>
         </div>
         <div class="modal-body">
             <div class="modal-confirm-icon modal-confirm-icon--danger">
-                <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"/></svg>
+                <i data-lucide="folder" style="width:20px;height:20px"></i>
             </div>
             <p class="modal-confirm-text">¿Eliminar la carpeta <strong id="del-folder-nombre"></strong>?</p>
             <p class="modal-confirm-sub">Se eliminarán todos los marcadores que contiene. Esta acción no se puede deshacer.</p>
@@ -411,7 +403,7 @@
         <div class="modal-footer">
             <button class="btn btn-secondary" id="del-folder-cancel" type="button">Cancelar</button>
             <button class="btn btn-danger" id="del-folder-confirm" type="button">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/></svg>
+                <i data-lucide="trash-2" style="width:13px;height:13px"></i>
                 Eliminar
             </button>
         </div>
@@ -424,7 +416,7 @@
         <div class="modal-header">
             <span class="modal-title">Mover marcadores</span>
             <button class="modal-close" id="bulk-move-close" type="button">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+                <i data-lucide="x" style="width:16px;height:16px"></i>
             </button>
         </div>
         <div class="modal-body">
@@ -453,12 +445,12 @@
         <div class="modal-header">
             <span class="modal-title">Eliminar marcadores</span>
             <button class="modal-close" id="bulk-del-close" type="button">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+                <i data-lucide="x" style="width:16px;height:16px"></i>
             </button>
         </div>
         <div class="modal-body">
             <div class="modal-confirm-icon modal-confirm-icon--danger">
-                <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/></svg>
+                <i data-lucide="trash-2" style="width:20px;height:20px"></i>
             </div>
             <p class="modal-confirm-text">¿Eliminar <strong id="bulk-del-count-text"></strong>?</p>
             <p class="modal-confirm-sub">Esta acción no se puede deshacer.</p>
@@ -466,7 +458,7 @@
         <div class="modal-footer">
             <button class="btn btn-secondary" id="bulk-del-cancel" type="button">Cancelar</button>
             <button class="btn btn-danger" id="bulk-del-confirm" type="button">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/></svg>
+                <i data-lucide="trash-2" style="width:13px;height:13px"></i>
                 Eliminar
             </button>
         </div>
@@ -479,7 +471,7 @@
         <div class="modal-header">
             <span class="modal-title">Verificar videos borrados</span>
             <button class="modal-close" id="check-close" type="button">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+                <i data-lucide="x" style="width:16px;height:16px"></i>
             </button>
         </div>
         <div class="modal-body">
@@ -500,7 +492,7 @@
         <div class="modal-header">
             <span class="modal-title">Duplicados detectados</span>
             <button class="modal-close" id="dupes-close" type="button">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+                <i data-lucide="x" style="width:16px;height:16px"></i>
             </button>
         </div>
         <div class="modal-body" id="dupes-body">
@@ -510,7 +502,7 @@
         <div class="modal-footer">
             <button class="btn btn-secondary" id="dupes-cancel" type="button">Cancelar</button>
             <button class="btn btn-danger" id="dupes-delete" type="button" disabled>
-                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15zM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25z"/></svg>
+                <i data-lucide="trash-2" style="width:12px;height:12px"></i>
                 Eliminar seleccionados
             </button>
             <button class="btn btn-primary" id="dupes-close-btn" type="button" style="display:none">Cerrar</button>

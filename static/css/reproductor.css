@@ -35,6 +35,6 @@ html, body {
 }
 
 .btn-back:hover {
-    background: rgba(248, 81, 73, 0.9);
+    background: rgba(0, 112, 243, 0.8);
     transform: scale(1.05);
 }

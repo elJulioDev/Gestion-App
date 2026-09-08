@@ -141,7 +141,7 @@ function renderGrid(posts, append) {
                 ${badge}
                 <div class="pw-card-overlay">
                     <button class="pw-overlay-btn js-view">
-                        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.28 5.22a.75.75 0 0 1 0 1.06l-2.22 2.22 2.22 2.22a.75.75 0 1 1-1.06 1.06L7.5 9.06l-2.72 2.72a.75.75 0 1 1-1.06-1.06l2.72-2.72-2.72-2.72a.75.75 0 0 1 1.06-1.06L7.5 6.94l2.22-2.22a.75.75 0 0 1 1.06 0z"/></svg>
+                        <i data-lucide="image" style="width:13px;height:13px"></i>
                         Ver
                     </button>
                 </div>
@@ -149,7 +149,7 @@ function renderGrid(posts, append) {
             <div class="pw-card-body">
                 <p class="pw-card-title">${title}</p>
                 <div class="pw-card-meta">
-                    <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M4.75 0a.75.75 0 0 1 .75.75V2h5V.75a.75.75 0 0 1 1.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 13.25 16H2.75A1.75 1.75 0 0 1 1 14.25V3.75C1 2.784 1.784 2 2.75 2H4V.75A.75.75 0 0 1 4.75 0zM2.5 7.5v6.75c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25V7.5zm0-4v2.5h11V3.75a.25.25 0 0 0-.25-.25H2.75a.25.25 0 0 0-.25.25z"/></svg>
+                    <i data-lucide="calendar" style="width:11px;height:11px"></i>
                     <span>${date}</span>
                 </div>
             </div>
@@ -162,6 +162,7 @@ function renderGrid(posts, append) {
         grid.innerHTML = html;
     }
     setView('grid');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function setView(s) {

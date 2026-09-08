@@ -112,8 +112,8 @@ function prefetchNextPage(query, page, order) {
     }, 800); // espera 800ms para no solapar con el request activo
 }
 
-const ICON_PLUS  = `<svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2z"/></svg>`;
-const ICON_CHECK = `<svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0z"/></svg>`;
+const ICON_PLUS  = `<i data-lucide="plus" style="width:10px;height:10px"></i>`;
+const ICON_CHECK = `<i data-lucide="check" style="width:10px;height:10px"></i>`;
 
 // ── Mobile ────────────────────────────────────────────────────
 const isMobile = () => window.innerWidth <= 900;
@@ -163,6 +163,7 @@ function renderSidebar(categorias) {
         </li>
     `).join('');
     catList.style.display = '';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 // ── Active tags ───────────────────────────────────────────────
@@ -174,7 +175,7 @@ function renderActiveTags() {
         const pill = document.createElement('span');
         pill.className = 'vb-active-pill';
         pill.innerHTML = `${escHtml(tag)}<button title="Quitar" data-remove="${escHtml(tag)}">
-            <svg width="8" height="8" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/></svg>
+            <i data-lucide="x" style="width:8px;height:8px"></i>
         </button>`;
         activePills.appendChild(pill);
     });
@@ -191,6 +192,7 @@ function renderActiveTags() {
         if (btn) btn.innerHTML = active ? ICON_CHECK : ICON_PLUS;
     });
 
+    if (typeof lucide !== 'undefined') lucide.createIcons();
     setTimeout(updateActiveBarOffset, 50);
 }
 
@@ -341,11 +343,11 @@ function renderGrid(videos) {
                 <span class="vb-card-duration">${escHtml(v.duration)}</span>
                 <div class="vb-card-overlay">
                     <button class="vb-overlay-btn js-play">
-                        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0zm4.879-2.773 4.264 2.559a.25.25 0 0 1 0 .428l-4.264 2.559A.25.25 0 0 1 6 10.559V5.442a.25.25 0 0 1 .379-.215z"/></svg>
+                        <i data-lucide="play" style="width:13px;height:13px"></i>
                         Ver
                     </button>
                     <button class="vb-overlay-btn is-save js-save">
-                        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2z"/></svg>
+                        <i data-lucide="plus" style="width:13px;height:13px"></i>
                         Guardar
                     </button>
                 </div>
@@ -353,13 +355,14 @@ function renderGrid(videos) {
             <div class="vb-card-body">
                 <p class="vb-card-title">${escHtml(v.title)}</p>
                 <div class="vb-card-meta">
-                    <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 4.546 10.711 2 8 2z"/></svg>
+                    <i data-lucide="eye" style="width:11px;height:11px"></i>
                     <span>${formatViews(v.views)} vistas</span>
                 </div>
             </div>
         </div>
     `).join('');
     setView('grid');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 function setView(s) {
     [emptyState, spinner, grid, errorState, pagination].forEach(el => el.style.display = 'none');

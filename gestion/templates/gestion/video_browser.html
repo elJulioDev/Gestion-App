@@ -9,35 +9,25 @@
     <div class="topbar-inner">
         <div class="topbar-left">
             <a href="{% url 'gestion:marcadores' %}" class="btn btn-ghost btn-icon" title="Volver">
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
-                    <path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 0 1-1.06 0L2.47 8.28a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 1.06L4.81 7h7.44a.75.75 0 0 1 0 1.5H4.81l2.97 2.97a.75.75 0 0 1 0 1.06z"/>
-                </svg>
+                <i data-lucide="arrow-left" style="width:15px;height:15px"></i>
             </a>
             <button class="vb-sidebar-toggle" id="vb-sidebar-toggle" title="Categorías">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
-                </svg>
+                <i data-lucide="list" style="width:13px;height:13px"></i>
                 Categorías
                 <span class="toggle-count" id="toggle-count">0</span>
             </button>
             <span class="topbar-brand">
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M16 3.75v8.5a.75.75 0 0 1-1.136.643L11 10.575v.675A1.75 1.75 0 0 1 9.25 13h-7.5A1.75 1.75 0 0 1 0 11.25v-6.5C0 3.784.784 3 1.75 3h7.5c.966 0 1.75.784 1.75 1.75v.675l3.864-2.318A.75.75 0 0 1 16 3.75zm-6.5 1a.25.25 0 0 0-.25-.25h-7.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-6.5zM11 8.825l3.5 2.1v-5.85l-3.5 2.1v1.65z"/>
-                </svg>
+                <i data-lucide="play" style="width:15px;height:15px"></i>
                 <span>Videos</span>
             </span>
         </div>
         <div class="topbar-center">
             <div class="search-wrapper">
-                <svg class="search-icon" width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04zm-5.68.26a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/>
-                </svg>
+                <i data-lucide="search" class="search-icon" style="width:13px;height:13px"></i>
                 <input class="search-input" id="vb-search" type="text"
                        placeholder="Buscar por título…" autocomplete="off">
                 <button class="search-clear" id="vb-clear" style="display:none">
-                    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/>
-                    </svg>
+                    <i data-lucide="x" style="width:12px;height:12px"></i>
                 </button>
             </div>
         </div>
@@ -55,7 +45,7 @@
             <form method="post" action="{% url 'gestion:logout' %}" style="display:inline">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-ghost btn-sm" title="Cerrar sesión">
-                    <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2 2.75C2 1.784 2.784 1 3.75 1h4a.75.75 0 0 1 0 1.5h-4a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h4a.75.75 0 0 1 0 1.5h-4A1.75 1.75 0 0 1 2 13.25V2.75zm9.44 4.5-1.97-1.97a.75.75 0 0 1 1.06-1.06l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 1 1-1.06-1.06l1.97-1.97H6.75a.75.75 0 0 1 0-1.5z"/></svg>
+                    <i data-lucide="log-out" style="width:13px;height:13px"></i>
                     <span class="logout-label">Salir</span>
                 </button>
             </form>
@@ -94,34 +84,26 @@
 
     <main class="vb-main" id="vb-main">
         <div class="vb-empty" id="vb-empty">
-            <svg width="40" height="40" viewBox="0 0 16 16" fill="currentColor" style="opacity:.2">
-                <path d="M16 3.75v8.5a.75.75 0 0 1-1.136.643L11 10.575v.675A1.75 1.75 0 0 1 9.25 13h-7.5A1.75 1.75 0 0 1 0 11.25v-6.5C0 3.784.784 3 1.75 3h7.5c.966 0 1.75.784 1.75 1.75v.675l3.864-2.318A.75.75 0 0 1 16 3.75zm-6.5 1a.25.25 0 0 0-.25-.25h-7.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-6.5zM11 8.825l3.5 2.1v-5.85l-3.5 2.1v1.65z"/>
-            </svg>
+            <i data-lucide="play" style="width:40px;height:40px;opacity:.2"></i>
             <p>Selecciona una categoría del menú</p>
         </div>
         <div class="vb-spinner" id="vb-spinner" style="display:none">
             <div class="vb-spinner-ring"></div>
         </div>
         <div class="vb-error" id="vb-error" style="display:none">
-            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" style="color:var(--red)">
-                <path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
-            </svg>
+            <i data-lucide="alert-triangle" style="width:20px;height:20px;color:var(--red)"></i>
             <p id="vb-error-msg">Error al cargar</p>
         </div>
         <div class="vb-grid" id="vb-grid" style="display:none"></div>
         <div class="vb-pagination" id="vb-pagination" style="display:none">
             <button class="btn btn-secondary btn-sm" id="vb-prev">
-                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-                    <path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 0 1-1.06 0L2.47 8.28a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 1.06L4.81 7h7.44a.75.75 0 0 1 0 1.5H4.81l2.97 2.97a.75.75 0 0 1 0 1.06z"/>
-                </svg>
+                <i data-lucide="chevron-left" style="width:12px;height:12px"></i>
                 Anterior
             </button>
             <span class="vb-page-info" id="vb-page-info">Pág. 1</span>
             <button class="btn btn-secondary btn-sm" id="vb-next">
                 Siguiente
-                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-                    <path fill-rule="evenodd" d="M8.22 2.97a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06l2.97-2.97H1.75a.75.75 0 0 1 0-1.5h9.44L8.22 4.03a.75.75 0 0 1 0-1.06z"/>
-                </svg>
+                <i data-lucide="chevron-right" style="width:12px;height:12px"></i>
             </button>
         </div>
     </main>
@@ -133,9 +115,7 @@
         <div class="modal-header">
             <span class="modal-title">Guardar marcador</span>
             <button class="modal-close" id="add-modal-close" type="button">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/>
-                </svg>
+                <i data-lucide="x" style="width:16px;height:16px"></i>
             </button>
         </div>
         <div class="modal-body">

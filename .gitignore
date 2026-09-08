@@ -8,9 +8,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Variables de entorno (¡Crítico para que no se filtren tus claves de Supabase!)
+# Variables de entorno
 .env
 AGENTS.md
+docs/*
 
 # Archivos de la base de datos local
 db.sqlite3

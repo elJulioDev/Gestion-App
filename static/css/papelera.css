@@ -5,7 +5,7 @@
 
 .papelera-main {
     margin-top: var(--header-h);
-    padding: 24px 28px;
+    padding: 20px 24px;
     height: calc(100vh - var(--header-h));
     overflow-y: auto;
 }
@@ -17,7 +17,7 @@
     max-width: 720px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
 }
 
 /* ── Item ─────────────────────────────────────────────────── */
@@ -25,9 +25,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 8px 8px 12px;
+    padding: 6px 6px 6px 10px;
     background: var(--surface-2);
-    border: 1px solid var(--border-muted);
+    border: 1px solid var(--border-default);
     border-radius: var(--r-md);
     transition:
         background var(--t-fast),
@@ -37,7 +37,7 @@
 }
 
 .papelera-item:hover {
-    background: var(--surface-3);
+    background: var(--surface-2);
     border-color: var(--border-default);
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
@@ -47,12 +47,12 @@
 .papelera-link {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex: 1;
     min-width: 0;
     text-decoration: none;
     color: var(--text-primary);
-    border-radius: var(--r);
+    border-radius: var(--r-md);
     position: relative;
 }
 
@@ -65,18 +65,18 @@
 .papelera-link::after {
     content: '';
     position: absolute;
-    inset: -8px -8px -8px -12px;
+    inset: -6px -6px -6px -10px;
 }
 
 .papelera-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--r);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-md);
     flex-shrink: 0;
     object-fit: cover;
     background: var(--surface-3);
-    border: 1px solid var(--border-muted);
-    padding: 3px;
+    border: 1px solid var(--border-default);
+    padding: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -90,7 +90,7 @@
 
 .papelera-title {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-primary);
     overflow: hidden;
     white-space: nowrap;
@@ -102,7 +102,7 @@
 
 .papelera-meta {
     font-size: 11px;
-    color: var(--text-subtle);
+    color: var(--text-secondary);
     margin-top: 2px;
     overflow: hidden;
     white-space: nowrap;
@@ -116,7 +116,7 @@
     gap: 4px;
     margin-left: auto;
     font-size: 11px;
-    color: var(--text-subtle);
+    color: var(--text-secondary);
     opacity: 0;
     transition: opacity var(--t-fast);
 }
@@ -132,24 +132,24 @@
     align-items: center;
     gap: 0;
     flex-shrink: 0;
-    background: var(--surface-4);
+    background: var(--surface-3);
     border: 1px solid var(--border-default);
-    border-radius: var(--r-sm);
+    border-radius: var(--r-md);
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-xs);
 }
 
 .papelera-action {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 28px;
+    width: 30px;
+    height: 26px;
     background: transparent;
     border: none;
     cursor: pointer;
     padding: 0;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     transition: background var(--t-fast), color var(--t-fast);
     flex-shrink: 0;
     line-height: 1;
@@ -160,12 +160,12 @@
 }
 
 .papelera-action--restore:hover {
-    background: var(--blue-emphasis);
+    background: var(--blue);
     color: #fff;
 }
 
 .papelera-action--delete:hover {
-    background: var(--red-emphasis);
+    background: var(--red);
     color: #fff;
 }
 
@@ -173,11 +173,11 @@
 .papelera-empty {
     text-align: center;
     padding: 80px 20px;
-    color: var(--text-subtle);
+    color: var(--text-secondary);
 }
 
 .papelera-empty h3 {
-    color: var(--text-muted);
+    color: var(--text-primary);
     font-size: 15px;
     margin: 10px 0 4px;
 }
@@ -187,5 +187,5 @@
 /* ── Responsive ───────────────────────────────────────────── */
 @media (max-width: 768px) {
     .papelera-main { padding: 14px 12px; }
-    .papelera-icon { width: 34px; height: 34px; }
+    .papelera-icon { width: 32px; height: 32px; }
 }
