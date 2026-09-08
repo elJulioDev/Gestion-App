@@ -3,6 +3,21 @@ const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
 const $  = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
+/* ── Performance helpers ──────────────────────────────────── */
+function debounce(fn, ms = 300) {
+    let t;
+    return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+}
+function throttleRAF(fn) {
+    let pending = false;
+    return (...a) => {
+        if (pending) return;
+        pending = true;
+        requestAnimationFrame(() => { fn(...a); pending = false; });
+    };
+}
+const BATCH_SIZE = 8;
+
 /* ── Toast ───────────────────────────────────────────────── */
 function toast(msg, tipo = 'success') {
     const container = $('#toast-container');
@@ -85,7 +100,7 @@ sidebarToggle.addEventListener('click', toggleSidebar);
 sidebarOverlay.addEventListener('click', closeSidebar);
 
 // Cierra sidebar al cambiar tamaño de pantalla
-window.addEventListener('resize', initSidebarState);
+window.addEventListener('resize', throttleRAF(initSidebarState));
 initSidebarState();
 
 /* ══════════════════════════════════════════════════════════
@@ -112,8 +127,9 @@ mobileSearchBtn.addEventListener('click', openMobileSearch);
 mobileSearchClose.addEventListener('click', closeMobileSearch);
 
 // Sincroniza búsqueda móvil con la lógica de filtrado
+const debouncedSearch = debounce(q => triggerSearch(q), 300);
 mobileSearchInput.addEventListener('input', e => {
-    triggerSearch(e.target.value);
+    debouncedSearch(e.target.value);
 });
 
 /* ── Filtro por carpeta ──────────────────────────────────── */
@@ -160,11 +176,11 @@ function triggerSearch(q) {
     });
 }
 
-$('#search-input').addEventListener('input', e => {
+$('#search-input').addEventListener('input', debounce(e => {
     triggerSearch(e.target.value);
     // Sincroniza con búsqueda móvil
     mobileSearchInput.value = e.target.value;
-});
+}, 300));
 
 /* ── Modal Añadir ────────────────────────────────────────── */
 function openModal() { openBackdrop('modal-backdrop'); }
@@ -431,11 +447,12 @@ $('#bulk-move-confirm').addEventListener('click', async () => {
     btn.textContent = 'Moviendo…';
 
     let ok = 0, fail = 0;
-    for (const card of selected) {
-        try {
-            const r = await post(`/marcadores/${card.dataset.id}/mover/`, { carpeta: carpetaId });
-            r.ok ? ok++ : fail++;
-        } catch { fail++; }
+    for (let i = 0; i < selected.length; i += BATCH_SIZE) {
+        const batch = selected.slice(i, i + BATCH_SIZE);
+        const results = await Promise.allSettled(
+            batch.map(card => post(`/marcadores/${card.dataset.id}/mover/`, { carpeta: carpetaId }))
+        );
+        results.forEach(r => r.status === 'fulfilled' && r.value.ok ? ok++ : fail++);
     }
 
     if (fail === 0) toast(`${ok} marcador(es) movido(s)`, 'success');
@@ -523,11 +540,12 @@ $('#bulk-del-confirm').addEventListener('click', async () => {
     btn.querySelector('span') && (btn.querySelector('span').textContent = 'Eliminando…');
 
     let ok = 0, fail = 0;
-    for (const card of selected) {
-        try {
-            const r = await post(`/marcadores/${card.dataset.id}/eliminar/`, {});
-            r.ok ? ok++ : fail++;
-        } catch { fail++; }
+    for (let i = 0; i < selected.length; i += BATCH_SIZE) {
+        const batch = selected.slice(i, i + BATCH_SIZE);
+        const results = await Promise.allSettled(
+            batch.map(card => post(`/marcadores/${card.dataset.id}/eliminar/`, {}))
+        );
+        results.forEach(r => r.status === 'fulfilled' && r.value.ok ? ok++ : fail++);
     }
 
     closeBackdrop('bulk-del-backdrop');
@@ -825,7 +843,7 @@ function updateDupesDeleteBtn() {
     dupesDelete.innerHTML = checked > 0
         ? `<i data-lucide="trash-2" style="width:12px;height:12px"></i> Eliminar ${checked}`
         : `<i data-lucide="trash-2" style="width:12px;height:12px"></i> Eliminar seleccionados`;
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [dupesList] });
 }
 
 dupesDelete.addEventListener('click', async () => {

@@ -131,7 +131,7 @@ sidebarToggle.addEventListener('click', () => {
     sidebarToggle.classList.toggle('is-active', !sidebarEl.classList.contains('is-collapsed'));
 });
 overlay.addEventListener('click', closeSidebar);
-window.addEventListener('resize', () => { if (!isMobile()) closeSidebar(); updateActiveBarOffset(); });
+window.addEventListener('resize', (() => { let r=false; return () => { if(r) return; r=true; requestAnimationFrame(()=>{ if(!isMobile()) closeSidebar(); updateActiveBarOffset(); r=false; }); }; })());
 
 // ── Offset dinámico ───────────────────────────────────────────
 function updateActiveBarOffset() {
@@ -163,7 +163,7 @@ function renderSidebar(categorias) {
         </li>
     `).join('');
     catList.style.display = '';
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [catList] });
 }
 
 // ── Active tags ───────────────────────────────────────────────
@@ -192,7 +192,7 @@ function renderActiveTags() {
         if (btn) btn.innerHTML = active ? ICON_CHECK : ICON_PLUS;
     });
 
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [activePills, catList] });
     setTimeout(updateActiveBarOffset, 50);
 }
 
@@ -362,7 +362,7 @@ function renderGrid(videos) {
         </div>
     `).join('');
     setView('grid');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [grid] });
 }
 function setView(s) {
     [emptyState, spinner, grid, errorState, pagination].forEach(el => el.style.display = 'none');

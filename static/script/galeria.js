@@ -36,6 +36,8 @@ let loading       = false;
 let lbIndex       = -1;
 let lbPostIndex   = -1;
 let lbImages      = [];
+let lbOpen        = false;
+let lbSwipeTimer  = null;
 const BATCH       = 50;
 
 // ── Init ──────────────────────────────────────────────────────
@@ -78,7 +80,7 @@ async function loadPosts(offset, append = false) {
         const posts = data.posts || [];
 
         if (append) {
-            allPosts = allPosts.concat(posts);
+            allPosts.push(...posts);
         } else {
             allPosts = posts;
         }
@@ -162,7 +164,7 @@ function renderGrid(posts, append) {
         grid.innerHTML = html;
     }
     setView('grid');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [grid] });
 }
 
 function setView(s) {
@@ -222,11 +224,13 @@ function openLightbox(idx) {
     lbIndex = 0;
     renderLightbox();
     lightbox.classList.add('is-open');
+    lbOpen = true;
     document.body.style.overflow = 'hidden';
 }
 
 function closeLightbox() {
     lightbox.classList.remove('is-open');
+    lbOpen = false;
     document.body.style.overflow = '';
 }
 
@@ -274,7 +278,7 @@ document.addEventListener('keydown', e => {
         searchInput.select();
     }
 
-    if (lightbox.classList.contains('is-open')) {
+    if (lbOpen) {
         const k = e.key.toLowerCase();
         if (k === 'escape') { closeLightbox(); return; }
         if (k === 'arrowleft' || k === 'a') { if (lbIndex > 0) { lbIndex--; renderLightbox(); } }
@@ -338,10 +342,11 @@ lbImg.addEventListener('touchend', e => {
         const dir = dx < 0 ? 1 : -1;
         const target = lbIndex + dir;
         if (target >= 0 && target < lbImages.length) {
+            clearTimeout(lbSwipeTimer);
             lbImg.style.transition = 'transform 0.25s ease';
             lbImg.style.transform = `translateX(${-dir * 300}px)`;
             lbImg.style.opacity = '0';
-            setTimeout(() => {
+            lbSwipeTimer = setTimeout(() => {
                 lbIndex = target;
                 renderLightbox();
             }, 250);
