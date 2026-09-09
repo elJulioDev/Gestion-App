@@ -62,7 +62,7 @@ class ImageProviderConfig(models.Model):
 class Carpeta(models.Model):
     nombre = models.CharField(max_length=80)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carpetas')
-    orden = models.PositiveIntegerField(default=0)
+    orden = models.IntegerField(default=0)
     creada = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -79,7 +79,7 @@ class Marcador(models.Model):
     icono = models.URLField(max_length=500, blank=True)
     carpeta = models.ForeignKey(Carpeta, on_delete=models.CASCADE, related_name='marcadores')
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='marcadores')
-    orden = models.PositiveIntegerField(default=0)
+    orden = models.IntegerField(default=0)
     creado = models.DateTimeField(auto_now_add=True)
     eliminado = models.BooleanField(default=False, help_text='Soft-delete: video no disponible en el proveedor')
     verificado = models.BooleanField(default=False, help_text='True si ya se verificó que el icono/URL es válido')

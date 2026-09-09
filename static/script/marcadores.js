@@ -1050,7 +1050,8 @@ function saveGridOrder(grid) {
     const section = grid.closest('.bm-section');
     if (!section) return;
     const folderId = parseInt(section.dataset.section);
-    const items = [...grid.querySelectorAll('.bm-card')].map((el, i) => ({
+    const els = [...grid.querySelectorAll('.bm-card')];
+    const items = els.map((el, i) => ({
         id: parseInt(el.dataset.id),
         orden: i,
     }));

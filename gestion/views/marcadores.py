@@ -44,7 +44,7 @@ def crear_carpeta(request):
         return JsonResponse({'ok': False, 'error': 'Nombre requerido'}, status=400)
     if Carpeta.objects.filter(usuario=request.user, nombre__iexact=nombre).exists():
         return JsonResponse({'ok': False, 'error': 'Ya existe'}, status=400)
-    c = Carpeta.objects.create(usuario=request.user, nombre=nombre)
+    c = Carpeta.objects.create(usuario=request.user, nombre=nombre, orden=-1)
     return JsonResponse({'ok': True, 'id': c.id, 'nombre': c.nombre})
 
 @login_required(login_url='gestion:login')
@@ -69,7 +69,7 @@ def crear_marcador(request):
     if not (titulo and url and carpeta_id):
         return JsonResponse({'ok': False, 'error': 'Datos incompletos'}, status=400)
     carpeta = get_object_or_404(Carpeta, id=carpeta_id, usuario=request.user)
-    m = Marcador.objects.create(usuario=request.user, carpeta=carpeta, titulo=titulo, url=url)
+    m = Marcador.objects.create(usuario=request.user, carpeta=carpeta, titulo=titulo, url=url, orden=-1)
     return JsonResponse({
         'ok': True, 'id': m.id, 'titulo': m.titulo, 'url': m.url,
         'icono': m.icono, 'carpeta_id': carpeta.id,
