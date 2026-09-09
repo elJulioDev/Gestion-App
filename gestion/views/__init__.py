@@ -6,6 +6,7 @@ from .marcadores import (
     reproductor_view, papelera_view, restaurar_marcador, eliminar_definitivo,
     verificar_marcadores_view, toggle_favorito,
     detectar_duplicados_view, eliminar_duplicados_view,
+    reordenar_marcadores, reordenar_carpetas,
 )
 from .galeria import (
     gallery_view, gallery_profile_proxy, gallery_posts_proxy, gallery_config_view,

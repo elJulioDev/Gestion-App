@@ -95,8 +95,9 @@
                 <span class="count-bubble">{{ favoritos }}</span>
             </div>
 
+            <div id="sortable-folders">
             {% for c in carpetas %}
-            <div class="sidebar-item" data-folder="{{ c.id }}">
+            <div class="sidebar-item sidebar-folder" data-folder="{{ c.id }}" data-id="{{ c.id }}">
                 <i data-lucide="folder" style="width:13px;height:13px"></i>
                 <span class="sidebar-item-name">{{ c.nombre }}</span>
                 <span class="count-bubble">{{ c.total }}</span>
@@ -114,6 +115,7 @@
             {% empty %}
             <p class="sidebar-empty">Sin carpetas aún</p>
             {% endfor %}
+            </div>
         </nav>
         <button class="sidebar-check-btn" id="check-btn" type="button" title="Comprobar si los videos guardados siguen disponibles en el proveedor">
             <i data-lucide="download" style="width:13px;height:13px"></i>

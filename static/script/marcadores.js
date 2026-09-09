@@ -560,6 +560,8 @@ function enterSelectMode() {
     document.body.classList.add('select-mode');
     selectModeBtn.classList.add('is-active');
     selectModeBtn.title = 'Salir de selección';
+    if (sortableFoldersEl && sortableFoldersEl._sortable) sortableFoldersEl._sortable.option('disabled', true);
+    $$('.bm-grid').forEach(g => { if (g._sortable) g._sortable.option('disabled', true); });
 }
 
 function exitSelectMode() {
@@ -569,6 +571,8 @@ function exitSelectMode() {
     selectModeBtn.title = 'Selección múltiple';
     $$('.bm-card.is-selected').forEach(c => c.classList.remove('is-selected'));
     bulkBar.classList.remove('is-visible');
+    if (sortableFoldersEl && sortableFoldersEl._sortable) sortableFoldersEl._sortable.option('disabled', false);
+    $$('.bm-grid').forEach(g => { if (g._sortable) g._sortable.option('disabled', false); });
 }
 
 selectModeBtn.addEventListener('click', () => {
@@ -978,3 +982,97 @@ dupesDelete.addEventListener('click', async () => {
         btn.innerHTML = 'Eliminar seleccionados';
     }
 });
+
+/* ══════════════════════════════════════════════════════════
+   DRAG & DROP (SortableJS)
+   ══════════════════════════════════════════════════════════ */
+
+function postJSON(url, data) {
+    return fetch(url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrf, 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    }).then(r => r.json());
+}
+
+/* ── Sidebar: reordenar carpetas ────────────────────────── */
+const sortableFoldersEl = document.getElementById('sortable-folders');
+if (sortableFoldersEl) {
+    sortableFoldersEl._sortable = new Sortable(sortableFoldersEl, {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        dragClass: 'sortable-drag',
+        chosenClass: 'sortable-chosen',
+        handle: '.sidebar-item',
+        filter: '.sidebar-empty',
+        onEnd() {
+            const items = [...sortableFoldersEl.querySelectorAll('.sidebar-folder')].map((el, i) => ({
+                id: parseInt(el.dataset.id),
+                orden: i,
+            }));
+            postJSON('/marcadores/carpeta/reordenar/', { items });
+        },
+    });
+}
+
+/* ── Grids: reordenar + mover marcadores entre carpetas ── */
+function initBookmarkSortables() {
+    $$('.bm-grid').forEach(grid => {
+        grid._sortable = new Sortable(grid, {
+            group: 'bookmarks',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            dragClass: 'sortable-drag',
+            chosenClass: 'sortable-chosen',
+            filter: '.bm-empty',
+            onEnd(evt) {
+                const card = evt.item;
+                const id = parseInt(card.dataset.id);
+                const newSection = evt.to.closest('.bm-section');
+                const newFolderId = newSection ? parseInt(newSection.dataset.section) : null;
+                const oldFolderId = card.dataset.folder ? parseInt(card.dataset.folder) : null;
+
+                if (newFolderId && oldFolderId !== newFolderId) {
+                    card.dataset.folder = newFolderId;
+                    postJSON(`/marcadores/${id}/mover/`, { carpeta: newFolderId }).then(() => {
+                        updateFolderCounts();
+                        saveGridOrder(evt.to);
+                    });
+                } else {
+                    saveGridOrder(grid);
+                }
+            },
+        });
+    });
+}
+
+function saveGridOrder(grid) {
+    const section = grid.closest('.bm-section');
+    if (!section) return;
+    const folderId = parseInt(section.dataset.section);
+    const items = [...grid.querySelectorAll('.bm-card')].map((el, i) => ({
+        id: parseInt(el.dataset.id),
+        orden: i,
+    }));
+    if (items.length) postJSON('/marcadores/reordenar/', { items });
+}
+
+function updateFolderCounts() {
+    $$('.bm-section').forEach(section => {
+        const folderId = section.dataset.section;
+        const count = section.querySelectorAll('.bm-card').length;
+        const sidebarItem = $(`.sidebar-item[data-folder="${folderId}"]`);
+        if (sidebarItem) {
+            const bubble = sidebarItem.querySelector('.count-bubble');
+            if (bubble) bubble.textContent = count;
+        }
+        const sectionBubble = section.querySelector('.count-bubble');
+        if (sectionBubble) sectionBubble.textContent = count;
+    });
+
+    const totalCards = $$('.bm-card').length;
+    const allBubble = $('.sidebar-item[data-folder="all"] .count-bubble');
+    if (allBubble) allBubble.textContent = totalCards;
+}
+
+initBookmarkSortables();

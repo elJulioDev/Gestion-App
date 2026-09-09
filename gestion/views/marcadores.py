@@ -20,10 +20,10 @@ def marcadores_view(request):
             default=Value(0),
             output_field=IntegerField()
         )
-    ).order_by('sin_miniatura', '-creado')
+    ).order_by('orden', 'titulo')
 
     # 2. Inyectamos este queryset a la consulta de las carpetas mediante prefetch_related
-    carpetas = Carpeta.objects.filter(usuario=request.user).annotate(
+    carpetas = Carpeta.objects.filter(usuario=request.user).order_by('orden', 'nombre').annotate(
         total=Count('marcadores', filter=Q(marcadores__eliminado=False))
     ).prefetch_related(
         Prefetch('marcadores', queryset=marcadores_qs)
@@ -148,7 +148,16 @@ def eliminar_carpeta(request, pk):
 @require_POST
 def mover_marcador(request, pk):
     m = get_object_or_404(Marcador, pk=pk, usuario=request.user)
-    carpeta_id = request.POST.get('carpeta')
+
+    if request.content_type == 'application/json':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            data = {}
+    else:
+        data = request.POST
+
+    carpeta_id = data.get('carpeta')
     carpeta = get_object_or_404(Carpeta, pk=carpeta_id, usuario=request.user)
     m.carpeta = carpeta
     m.save()
@@ -203,6 +212,56 @@ def toggle_favorito(request, pk):
     m.favorito = not m.favorito
     m.save(update_fields=['favorito'])
     return JsonResponse({'ok': True, 'favorito': m.favorito})
+
+
+@login_required(login_url='gestion:login')
+@require_POST
+def reordenar_marcadores(request):
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'ok': False, 'error': 'JSON inválido'}, status=400)
+
+    items = data.get('items', [])
+    if not items:
+        return JsonResponse({'ok': False, 'error': 'Sin items'}, status=400)
+
+    ids = [item['id'] for item in items]
+    marcadores = Marcador.objects.filter(pk__in=ids, usuario=request.user)
+    marcadores_by_id = {m.pk: m for m in marcadores}
+
+    for item in items:
+        m = marcadores_by_id.get(item['id'])
+        if m:
+            m.orden = item['orden']
+            m.save(update_fields=['orden'])
+
+    return JsonResponse({'ok': True})
+
+
+@login_required(login_url='gestion:login')
+@require_POST
+def reordenar_carpetas(request):
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'ok': False, 'error': 'JSON inválido'}, status=400)
+
+    items = data.get('items', [])
+    if not items:
+        return JsonResponse({'ok': False, 'error': 'Sin items'}, status=400)
+
+    ids = [item['id'] for item in items]
+    carpetas = Carpeta.objects.filter(pk__in=ids, usuario=request.user)
+    carpetas_by_id = {c.pk: c for c in carpetas}
+
+    for item in items:
+        c = carpetas_by_id.get(item['id'])
+        if c:
+            c.orden = item['orden']
+            c.save(update_fields=['orden'])
+
+    return JsonResponse({'ok': True})
 
 
 @login_required(login_url='gestion:login')

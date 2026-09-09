@@ -9,6 +9,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 
     path('marcadores/', views.marcadores_view, name='marcadores'),
+    path('marcadores/reordenar/', views.reordenar_marcadores, name='reordenar_marcadores'),
+    path('marcadores/carpeta/reordenar/', views.reordenar_carpetas, name='reordenar_carpetas'),
     path('marcadores/carpeta/crear/', views.crear_carpeta, name='crear_carpeta'),
     path('marcadores/carpeta/<int:pk>/editar/', views.editar_carpeta, name='editar_carpeta'),
     path('marcadores/carpeta/<int:pk>/eliminar/', views.eliminar_carpeta, name='eliminar_carpeta'),

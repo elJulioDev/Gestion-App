@@ -942,3 +942,43 @@ body.select-mode .bm-card:not(.is-selected):hover {
     font-size: 11px;
     color: var(--text-subtle);
 }
+
+/* ── Drag & Drop (SortableJS) ───────────────────────────── */
+.sidebar-folder,
+.bm-card {
+    cursor: grab;
+}
+.sidebar-folder:active,
+.bm-card:active {
+    cursor: grabbing;
+}
+
+.sortable-ghost {
+    opacity: 0.4;
+    outline: 2px dashed var(--accent);
+    outline-offset: -2px;
+}
+
+.sortable-drag {
+    opacity: 1 !important;
+    transform: scale(1.03);
+    box-shadow: var(--shadow-lg);
+    z-index: 9999;
+}
+
+.sortable-chosen {
+    background: var(--bg-muted);
+}
+
+.sidebar-folder.sortable-ghost {
+    outline-offset: -1px;
+}
+
+.bm-grid.sortable-ghost {
+    outline: none;
+}
+
+body.select-mode .sidebar-folder,
+body.select-mode .bm-card {
+    cursor: default;
+}
