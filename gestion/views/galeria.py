@@ -28,7 +28,10 @@ def gallery_view(request, service, creator_id):
             ).values("id", "titulo", "url", "icono")
         )
         for bm in raw:
-            bm["gallery_url"] = _resolve_gallery_url(bm["url"])
+            url = _resolve_gallery_url(bm["url"])
+            if url:
+                url += f"?folder={folder_id}"
+            bm["gallery_url"] = url
         folder_bookmarks = raw
     return render(request, "gestion/galeria.html", {
         "service": service,

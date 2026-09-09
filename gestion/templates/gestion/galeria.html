@@ -53,7 +53,7 @@
         <div class="sidebar-section-label">Carpeta</div>
 
         {% for bm in folder_bookmarks %}
-        <a href="{{ bm.gallery_url }}" class="sidebar-item{% if bm.gallery_url == request.path %} active{% endif %}">
+        <a href="{{ bm.gallery_url }}" class="sidebar-item{% if bm.gallery_url == request.get_full_path %} active{% endif %}">
             <img src="{{ bm.icono }}" alt="" style="width:16px;height:16px;border-radius:3px;flex-shrink:0;object-fit:contain" loading="lazy">
             <span class="sidebar-item-name">{{ bm.titulo }}</span>
         </a>

@@ -24,6 +24,7 @@ function applyFolderFilter(folder) {
 
 const savedFolder = localStorage.getItem('bm_folder');
 if (savedFolder) applyFolderFilter(savedFolder);
+document.body.classList.remove('preload');
 
 /* ── Performance helpers ──────────────────────────────────── */
 function debounce(fn, ms = 300) {
@@ -152,6 +153,67 @@ mobileSearchClose.addEventListener('click', closeMobileSearch);
 const debouncedSearch = debounce(q => triggerSearch(q), 300);
 mobileSearchInput.addEventListener('input', e => {
     debouncedSearch(e.target.value);
+});
+
+/* ══════════════════════════════════════════════════════════
+   LONG-PRESS MODAL (móvil)
+   ══════════════════════════════════════════════════════════ */
+const lpBackdrop = document.getElementById('longpress-backdrop');
+const lpFav      = document.getElementById('lp-fav');
+const lpEdit     = document.getElementById('lp-edit');
+const lpDelete   = document.getElementById('lp-delete');
+let lpTimer = null, lpCard = null;
+
+function openLongpressModal(card) {
+    lpCard = card;
+    lpFav.querySelector('span').textContent =
+        card.dataset.fav === '1' ? 'Quitar de favoritos' : 'Marcar como favorito';
+    lpBackdrop.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLongpressModal() {
+    lpBackdrop.classList.remove('is-open');
+    document.body.style.overflow = '';
+    lpCard = null;
+}
+
+lpBackdrop.addEventListener('click', e => {
+    if (e.target === lpBackdrop) closeLongpressModal();
+});
+
+document.addEventListener('touchstart', e => {
+    if (!isMobile()) return;
+    const card = e.target.closest('.bm-card');
+    if (!card || e.target.closest('.bm-action-btn') || e.target.closest('.bm-check')) return;
+    lpTimer = setTimeout(() => openLongpressModal(card), 500);
+}, { passive: true });
+
+document.addEventListener('touchend',    () => { clearTimeout(lpTimer); }, { passive: true });
+document.addEventListener('touchmove',   () => { clearTimeout(lpTimer); }, { passive: true });
+
+if (lpFav) lpFav.addEventListener('click', () => {
+    if (!lpCard) return;
+    const id = lpCard.dataset.id;
+    const btn = lpCard.querySelector(`.bm-fav[data-fav-bm="${id}"]`);
+    if (btn) btn.click();
+    closeLongpressModal();
+});
+
+if (lpEdit) lpEdit.addEventListener('click', () => {
+    if (!lpCard) return;
+    const id = lpCard.dataset.id;
+    const btn = lpCard.querySelector(`.bm-edit[data-edit-bm="${id}"]`);
+    if (btn) btn.click();
+    closeLongpressModal();
+});
+
+if (lpDelete) lpDelete.addEventListener('click', () => {
+    if (!lpCard) return;
+    const id = lpCard.dataset.id;
+    const btn = lpCard.querySelector(`.bm-delete[data-del-bm="${id}"]`);
+    if (btn) btn.click();
+    closeLongpressModal();
 });
 
 /* ── Filtro por carpeta ──────────────────────────────────── */

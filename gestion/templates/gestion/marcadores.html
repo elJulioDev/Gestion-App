@@ -124,6 +124,7 @@
             <span>Detectar duplicados</span>
         </button>
     </aside>
+    <script>if(innerWidth<=768){var s=document.getElementById('sidebar');if(s)s.classList.add('is-collapsed')}</script>
 
     <!-- Main -->
     <main class="main-content">
@@ -506,6 +507,26 @@
                 Eliminar seleccionados
             </button>
             <button class="btn btn-primary" id="dupes-close-btn" type="button" style="display:none">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Modal acciones long-press (móvil) ────────────────── -->
+<div class="modal-backdrop" id="longpress-backdrop">
+    <div class="modal" style="max-width:280px">
+        <div class="modal-body" style="padding:8px 0">
+            <button class="longpress-option" id="lp-fav" type="button">
+                <i data-lucide="star" style="width:15px;height:15px"></i>
+                <span>Marcar como favorito</span>
+            </button>
+            <button class="longpress-option" id="lp-edit" type="button">
+                <i data-lucide="pencil" style="width:15px;height:15px"></i>
+                <span>Editar</span>
+            </button>
+            <button class="longpress-option longpress-option--danger" id="lp-delete" type="button">
+                <i data-lucide="trash-2" style="width:15px;height:15px"></i>
+                <span>Eliminar</span>
+            </button>
         </div>
     </div>
 </div>

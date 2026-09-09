@@ -43,6 +43,7 @@ const BATCH       = 50;
 // ── Init ──────────────────────────────────────────────────────
 loadProfile();
 loadPosts(0);
+document.body.classList.remove('preload');
 
 // ── Sidebar toggle ──────────────────────────────────────────
 const pwSidebar        = document.getElementById('pw-folder-sidebar');
@@ -69,6 +70,7 @@ if (pwSidebar && pwIsMobile()) pwSidebar.classList.add('is-collapsed');
 
 if (pwSidebarToggle) {
     pwSidebarToggle.addEventListener('click', () => {
+        if (!pwSidebar) return;
         if (pwSidebar.classList.contains('is-collapsed')) pwOpenSidebar();
         else pwCloseSidebar();
     });
