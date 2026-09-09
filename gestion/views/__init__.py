@@ -10,3 +10,4 @@ from .marcadores import (
 from .galeria import (
     gallery_view, gallery_profile_proxy, gallery_posts_proxy, gallery_config_view,
 )
+from .img_provider import img_config_view, img_gallery_view, img_search_proxy

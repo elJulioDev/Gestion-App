@@ -1,7 +1,7 @@
 {% extends "gestion/base.html" %}
 {% load static %}
 
-{% block title %}Pawchive Gallery{% endblock %}
+{% block title %}{{ artist_name }}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/marcadores.css' %}">
 <link rel="stylesheet" href="{% static 'css/galeria.css' %}">
@@ -19,14 +19,14 @@
             </a>
             <span class="topbar-brand">
                 <i data-lucide="image" style="width:15px;height:15px"></i>
-                <span id="pw-creator-name">Pawchive</span>
+                <span id="pw-creator-name">{{ artist_name }}</span>
             </span>
         </div>
         <div class="topbar-center">
             <div class="search-wrapper">
                 <i data-lucide="search" class="search-icon" style="width:13px;height:13px"></i>
                 <input class="search-input" id="pw-search" type="text"
-                       placeholder="Buscar posts…" autocomplete="off">
+                       placeholder="Filtrar posts…" autocomplete="off">
                 <button class="search-clear" id="pw-clear" style="display:none">
                     <i data-lucide="x" style="width:12px;height:12px"></i>
                 </button>
@@ -100,7 +100,8 @@
         <div class="pw-lightbox-loading" id="pw-lightbox-loading">
             <div class="pw-lightbox-spinner"></div>
         </div>
-        <img class="pw-lightbox-img" id="pw-lightbox-img" src="" alt="">
+        <img class="pw-lightbox-img" id="pw-lightbox-img" src="" alt="" style="display:none">
+        <video class="pw-lightbox-video" id="pw-lightbox-video" controls loop muted playsinline style="display:none"></video>
     </div>
     <div class="pw-lightbox-info" id="pw-lightbox-info">
         <span class="pw-lightbox-title" id="pw-lightbox-title"></span>
@@ -114,12 +115,11 @@
 {% block extra_js %}
 <script>
 const PW_CONFIG = {
-    service:    "{{ service }}",
-    creatorId:  "{{ creator_id }}",
-    postsUrl:   "{% url 'gestion:gallery_posts_proxy' service=service creator_id=creator_id %}",
-    profileUrl: "{% url 'gestion:gallery_profile_proxy' service=service creator_id=creator_id %}",
+    tag:        "{{ tag }}",
+    artistName: "{{ artist_name }}",
+    searchUrl:  "{% url 'gestion:img_search_proxy' %}",
     csrfToken:  "{{ csrf_token }}",
 };
 </script>
-<script src="{% static 'script/galeria.js' %}"></script>
+<script src="{% static 'script/img_gallery.js' %}"></script>
 {% endblock %}

@@ -3,6 +3,28 @@ const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
 const $  = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
+/* ── Restaurar filtro de carpeta (antes de render) ───────── */
+function applyFolderFilter(folder) {
+    $$('.sidebar-item').forEach(i => i.classList.remove('active'));
+    const target = document.querySelector(`.sidebar-item[data-folder="${folder}"]`);
+    if (target) target.classList.add('active');
+
+    if (folder === 'favoritos') {
+        document.querySelectorAll('.bm-section').forEach(s => s.classList.remove('is-hidden'));
+        document.querySelectorAll('.bm-card').forEach(c => {
+            c.classList.toggle('is-hidden', !c.dataset.fav);
+        });
+    } else {
+        document.querySelectorAll('.bm-section').forEach(s => {
+            s.classList.toggle('is-hidden', folder !== 'all' && s.dataset.section !== folder);
+        });
+        document.querySelectorAll('.bm-card.is-hidden').forEach(c => c.classList.remove('is-hidden'));
+    }
+}
+
+const savedFolder = localStorage.getItem('bm_folder');
+if (savedFolder) applyFolderFilter(savedFolder);
+
 /* ── Performance helpers ──────────────────────────────────── */
 function debounce(fn, ms = 300) {
     let t;
@@ -136,22 +158,9 @@ mobileSearchInput.addEventListener('input', e => {
 $$('.sidebar-item[data-folder]').forEach(item => {
     item.addEventListener('click', e => {
         if (e.target.closest('.sidebar-item-action')) return;
-        $$('.sidebar-item').forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
         const folder = item.dataset.folder;
-
-        if (folder === 'favoritos') {
-            $$('.bm-section').forEach(s => s.classList.remove('is-hidden'));
-            $$('.bm-card').forEach(c => {
-                c.classList.toggle('is-hidden', !c.dataset.fav);
-            });
-        } else {
-            $$('.bm-section').forEach(s => {
-                s.classList.toggle('is-hidden', folder !== 'all' && s.dataset.section !== folder);
-            });
-            $$('.bm-card.is-hidden').forEach(c => c.classList.remove('is-hidden'));
-        }
-
+        localStorage.setItem('bm_folder', folder);
+        applyFolderFilter(folder);
         if (isMobile()) closeSidebar();
     });
 });
@@ -723,6 +732,19 @@ fetch('/api/galeria/config/', {
 })
 .catch(() => {});
 
+// Obtener patrón de imágenes desde el servidor
+let IMG_RE = null;
+fetch('/api/img/config/', {
+    headers: { 'X-CSRFToken': csrf }
+})
+.then(r => r.json())
+.then(data => {
+    if (data.ok && data.url_pattern) {
+        IMG_RE = new RegExp(data.url_pattern, 'i');
+    }
+})
+.catch(() => {});
+
 // Interceptar clic en cards de video reconocidos
 document.addEventListener('click', e => {
     if (!VIDEO_EXT_RE) return;
@@ -752,7 +774,25 @@ document.addEventListener('click', e => {
     if (!match) return;
 
     e.preventDefault();
-    window.location.href = `/galeria/${match[1]}/${match[2]}/`;
+    const folder = card.dataset.folder || '';
+    window.location.href = `/galeria/${match[1]}/${match[2]}/` + (folder ? `?folder=${folder}` : '');
+}, true);
+
+// Interceptar clic en cards de imágenes → galería local
+document.addEventListener('click', e => {
+    if (!IMG_RE) return;
+    if (document.body.classList.contains('select-mode')) return;
+    if (e.target.closest('.bm-action-btn')) return;
+
+    const card = e.target.closest('.bm-card');
+    if (!card) return;
+
+    const match = IMG_RE.exec(card.href);
+    if (!match) return;
+
+    e.preventDefault();
+    const folder = card.dataset.folder || '';
+    window.location.href = `/img/${match[1]}/` + (folder ? `?folder=${folder}` : '');
 }, true);
 
 /* ══════════════════════════════════════════════════════════

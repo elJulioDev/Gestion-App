@@ -34,6 +34,31 @@ class ProveedorConfig(models.Model):
         return obj
 
 
+class ImageProviderConfig(models.Model):
+    """
+    Configuración del proveedor de imágenes.
+    Singleton: solo debe existir un registro (pk=1).
+    """
+    api_url = models.URLField(max_length=200, help_text='URL base de la API')
+    api_key = models.CharField(max_length=200, help_text='API key')
+    user_id = models.CharField(max_length=50, help_text='User ID')
+
+    class Meta:
+        verbose_name = 'configuración del proveedor de imágenes'
+        verbose_name_plural = 'configuraciones del proveedor de imágenes'
+
+    def __str__(self):
+        return 'Image Provider Config'
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
 class Carpeta(models.Model):
     nombre = models.CharField(max_length=80)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carpetas')
@@ -50,7 +75,7 @@ class Carpeta(models.Model):
 
 class Marcador(models.Model):
     titulo = models.CharField(max_length=120)
-    url = models.URLField(max_length=500)
+    url = models.CharField(max_length=500)
     icono = models.URLField(max_length=500, blank=True)
     carpeta = models.ForeignKey(Carpeta, on_delete=models.CASCADE, related_name='marcadores')
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='marcadores')
@@ -73,7 +98,11 @@ class Marcador(models.Model):
 
     def _resolver_icono(self):
         from urllib.parse import urlparse
-        dominio = urlparse(self.url).netloc
+        parsed = urlparse(self.url)
+        dominio = parsed.netloc or parsed.path.split('/')[0] if '://' in self.url else ''
+
+        if not dominio:
+            return ''
 
         # Proveedor externo (archivo local, no incluido en el repositorio)
         try:

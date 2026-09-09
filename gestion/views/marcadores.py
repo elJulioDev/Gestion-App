@@ -161,11 +161,11 @@ def reproductor_view(request, video_id):
         raise Http404
 
     cfg = ProveedorConfig.load()
-    url_final = f"{cfg.embed_url}/{video_id}/?autoplay=1"
+    embed_url = f"{cfg.embed_url}/{video_id}/"
 
     return render(request, 'gestion/reproductor.html', {
         'video_id': video_id,
-        'embed_url': url_final
+        'embed_url': embed_url,
     })
 
 @login_required(login_url='gestion:login')

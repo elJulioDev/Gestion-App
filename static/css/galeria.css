@@ -1,10 +1,20 @@
 /* ════════════════════════════════════════════════════════════
    galeria.css — Galería de posts
-   Layout: topbar fijo → main con grid de posts
+   Layout: topbar fijo → pw-body (sidebar + main)
+   Sidebar styles come from marcadores.css
    ════════════════════════════════════════════════════════════ */
 
 html, body { height: 100%; overflow: hidden; }
 body { display: flex; flex-direction: column; }
+
+/* ── Body wrapper (sidebar + main) ─────────────────────── */
+.pw-body {
+    display: flex;
+    flex: 1;
+    margin-top: var(--header-h);
+    height: calc(100vh - var(--header-h));
+    overflow: hidden;
+}
 
 /* ── Topbar overrides ─────────────────────────────────────── */
 .pw-post-count {
@@ -16,8 +26,6 @@ body { display: flex; flex-direction: column; }
 /* ── Main ────────────────────────────────────────────────── */
 .pw-main {
     flex: 1;
-    margin-top: var(--header-h);
-    height: calc(100vh - var(--header-h));
     overflow-y: auto;
     padding: 20px 20px 40px;
     scrollbar-width: thin;
@@ -103,6 +111,14 @@ body { display: flex; flex-direction: column; }
     padding: 2px 6px;
     border-radius: var(--r-sm);
     backdrop-filter: blur(4px);
+}
+
+.pw-card-badge-icon {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 16px; height: 16px;
+    color: #fff;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
 }
 
 .pw-card-overlay {
@@ -219,6 +235,13 @@ body { display: flex; flex-direction: column; }
     border-radius: var(--r-sm);
     transition: opacity 0.2s ease;
     touch-action: pan-y;
+}
+.pw-lightbox-video {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: var(--r-sm);
+    outline: none;
 }
 
 .pw-lightbox-info {

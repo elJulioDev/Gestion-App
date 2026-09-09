@@ -42,3 +42,11 @@ urlpatterns += [
     path('api/galeria/<str:service>/<str:creator_id>/posts/', gallery_posts_proxy, name='gallery_posts_proxy'),
     path('api/galeria/config/', gallery_config_view, name='gallery_config'),
 ]
+
+# Imágenes
+from .views.img_provider import img_config_view, img_gallery_view, img_search_proxy
+urlpatterns += [
+    path('img/<str:tag>/', img_gallery_view, name='img_gallery'),
+    path('api/img/config/', img_config_view, name='img_config'),
+    path('api/img/search/', img_search_proxy, name='img_search_proxy'),
+]

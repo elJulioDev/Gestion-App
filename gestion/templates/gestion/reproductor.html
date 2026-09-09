@@ -5,27 +5,50 @@
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/reproductor.css' %}">{% endblock %}
 
 {% block content %}
-<button class="btn-back" onclick="history.back()" title="Cerrar reproductor">
-    <i data-lucide="x" style="width:20px;height:20px"></i>
-</button>
+<div class="rp-wrapper">
+    <iframe id="video-iframe"
+            src="{{ embed_url }}"
+            allowfullscreen
+            allow="autoplay; fullscreen; picture-in-picture"
+            frameborder="0"
+            scrolling="no">
+    </iframe>
 
-<iframe id="video-iframe"
-        src="{{ embed_url }}"
-        allowfullscreen
-        allow="autoplay; fullscreen; picture-in-picture"
-        frameborder="0"
-        scrolling="no">
-</iframe>
-{% endblock %}
+    <button class="rp-close" id="rp-close" title="Cerrar (Esc)">
+        <i data-lucide="x" style="width:20px;height:20px"></i>
+    </button>
+</div>
 
-{% block extra_js %}
 <script>
-    window.onload = () => {
-        const iframe = document.getElementById('video-iframe');
-        if(iframe.contentWindow) iframe.focus();
-    };
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') history.back();
+(function() {
+    const iframe  = document.getElementById('video-iframe');
+    const closeBtn = document.getElementById('rp-close');
+
+    /* ── focus iframe on load ─────────────────────────────── */
+    iframe.addEventListener('load', () => {
+        try { iframe.contentWindow.focus(); } catch {}
     });
+
+    /* ── keyboard shortcuts ───────────────────────────────── */
+    document.addEventListener('keydown', e => {
+        switch (e.key) {
+            case 'Escape':
+                e.preventDefault();
+                history.back();
+                break;
+        }
+    });
+
+    /* ── close button ─────────────────────────────────────── */
+    closeBtn.addEventListener('click', () => history.back());
+
+    /* ── init icons ───────────────────────────────────────── */
+    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [closeBtn] });
+
+    /* ── auto-focus ───────────────────────────────────────── */
+    window.addEventListener('load', () => {
+        try { iframe.contentWindow.focus(); } catch {}
+    });
+})();
 </script>
 {% endblock %}
