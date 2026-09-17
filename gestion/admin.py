@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Carpeta, Marcador, ProveedorConfig
+from .models import Carpeta, Marcador, ProveedorConfig, CarpetaArchivo, Archivo
 
 
 class OwnedModelAdmin(admin.ModelAdmin):
@@ -39,3 +39,16 @@ class ProveedorConfigAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(CarpetaArchivo)
+class CarpetaArchivoAdmin(OwnedModelAdmin):
+    list_display = ('nombre', 'orden', 'creada')
+    search_fields = ('nombre',)
+
+
+@admin.register(Archivo)
+class ArchivoAdmin(OwnedModelAdmin):
+    list_display = ('titulo', 'url_archivo', 'carpeta', 'tipo', 'orden')
+    list_filter = ('carpeta', 'tipo')
+    search_fields = ('titulo', 'url_archivo', 'nombre_original')

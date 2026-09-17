@@ -52,3 +52,25 @@ urlpatterns += [
     path('api/img/config/', img_config_view, name='img_config'),
     path('api/img/search/', img_search_proxy, name='img_search_proxy'),
 ]
+
+# Archivo
+from .views.archivo import (
+    archivo_view, crear_carpeta, editar_carpeta,
+    eliminar_carpeta, reordenar_carpetas,
+    upload_file, upload_url, editar_archivo, eliminar_archivo,
+    reordenar_archivos, mover_archivo, generar_thumbnail,
+)
+urlpatterns += [
+    path('archivo/', archivo_view, name='archivo'),
+    path('archivo/carpeta/crear/', crear_carpeta, name='archivo_crear_carpeta'),
+    path('archivo/carpeta/<int:pk>/editar/', editar_carpeta, name='archivo_editar_carpeta'),
+    path('archivo/carpeta/<int:pk>/eliminar/', eliminar_carpeta, name='archivo_eliminar_carpeta'),
+    path('archivo/carpeta/reordenar/', reordenar_carpetas, name='archivo_reordenar_carpetas'),
+    path('archivo/upload/', upload_file, name='archivo_upload'),
+    path('archivo/upload-url/', upload_url, name='archivo_upload_url'),
+    path('archivo/<int:pk>/editar/', editar_archivo, name='archivo_editar_archivo'),
+    path('archivo/<int:pk>/eliminar/', eliminar_archivo, name='archivo_eliminar_archivo'),
+    path('archivo/reordenar/', reordenar_archivos, name='archivo_reordenar_archivos'),
+    path('archivo/<int:pk>/mover/', mover_archivo, name='archivo_mover_archivo'),
+    path('archivo/<int:pk>/thumbnail/', generar_thumbnail, name='archivo_generar_thumbnail'),
+]

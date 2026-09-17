@@ -12,6 +12,8 @@ __pycache__/
 .env
 AGENTS.md
 docs/*
+.opencode/
+opencode.json
 
 # Archivos de la base de datos local
 db.sqlite3

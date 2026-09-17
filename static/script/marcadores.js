@@ -1005,6 +1005,9 @@ if (sortableFoldersEl) {
         chosenClass: 'sortable-chosen',
         handle: '.sidebar-item',
         filter: '.sidebar-empty',
+        delay: 150,
+        delayOnTouchOnly: true,
+        touchStartThreshold: 5,
         onEnd() {
             const items = [...sortableFoldersEl.querySelectorAll('.sidebar-folder')].map((el, i) => ({
                 id: parseInt(el.dataset.id),
@@ -1025,6 +1028,9 @@ function initBookmarkSortables() {
             dragClass: 'sortable-drag',
             chosenClass: 'sortable-chosen',
             filter: '.bm-empty',
+            delay: 150,
+            delayOnTouchOnly: true,
+            touchStartThreshold: 5,
             onEnd(evt) {
                 const card = evt.item;
                 const id = parseInt(card.dataset.id);

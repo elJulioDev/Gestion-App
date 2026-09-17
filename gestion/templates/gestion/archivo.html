@@ -1,0 +1,536 @@
+{% extends "gestion/base.html" %}
+{% load static %}
+{% load archivo_extras %}
+
+{% block title %}Archivos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/marcadores.css' %}">
+<link rel="stylesheet" href="{% static 'css/galeria.css' %}">
+<link rel="stylesheet" href="{% static 'css/archivo.css' %}">
+{% endblock %}
+
+{% block content %}
+<!--   Topbar   -->
+<header class="topbar">
+    <div class="topbar-inner">
+        <div class="topbar-left">
+            <button class="btn btn-ghost btn-icon sidebar-toggle-btn" id="archivo-sidebar-toggle" type="button" title="Menú">
+                <i data-lucide="menu" style="width:15px;height:15px"></i>
+            </button>
+            <a href="{% url 'gestion:marcadores' %}" class="btn btn-ghost btn-icon" title="Volver a Marcadores">
+                <i data-lucide="arrow-left" style="width:15px;height:15px"></i>
+            </a>
+            <span class="topbar-brand">
+                <i data-lucide="cloud-upload" style="width:15px;height:15px"></i>
+                <span>Archivos</span>
+            </span>
+        </div>
+        
+        <div class="topbar-center">
+            <div class="search-wrapper">
+                <i data-lucide="search" class="search-icon" style="width:13px;height:13px"></i>
+                <input class="search-input" id="archivo-search" type="text" placeholder="Buscar archivo..." autocomplete="off">
+                <button class="search-clear" id="archivo-clear" style="display:none">
+                    <i data-lucide="x" style="width:12px;height:12px"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="topbar-right">
+            <span class="archivo-count" id="archivo-count"></span>
+            
+            <button class="btn btn-ghost btn-icon mobile-search-btn" id="archivo-mobile-search-btn" type="button" title="Buscar">
+                <i data-lucide="search" style="width:14px;height:14px"></i>
+            </button>
+            
+            <button class="btn btn-ghost btn-sm" id="archivo-select-mode-btn" type="button" title="Selección múltiple">
+                <i data-lucide="check-square" style="width:13px;height:13px"></i>
+                <span>Seleccionar</span>
+            </button>
+            
+            <button class="btn btn-primary btn-sm" id="archivo-add-btn" type="button">
+                <i data-lucide="plus" style="width:13px;height:13px"></i>
+                <span>Añadir</span>
+            </button>
+            
+            <button class="btn btn-ghost btn-sm" id="archivo-gen-thumbs-btn" type="button" title="Generar miniaturas faltantes">
+                <i data-lucide="image-plus" style="width:13px;height:13px"></i>
+                <span>Miniaturas</span>
+            </button>
+
+            <div class="topbar-divider"></div>
+            
+            <form method="post" action="{% url 'gestion:logout' %}" style="display:inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-ghost btn-sm" title="Cerrar sesión">
+                    <i data-lucide="log-out" style="width:13px;height:13px"></i>
+                    <span class="logout-label">Salir</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<!--   Barra de búsqueda móvil   -->
+<div class="mobile-search-bar" id="archivo-mobile-search-bar">
+    <div class="mobile-search-inner">
+        <i data-lucide="search" style="width:13px;height:13px;color:var(--text-subtle);flex-shrink:0"></i>
+        <input class="mobile-search-input" id="archivo-mobile-search-input" type="text" placeholder="Buscar archivo..." autocomplete="off">
+        <button class="btn btn-ghost btn-icon" id="archivo-mobile-search-close" type="button">
+            <i data-lucide="x" style="width:13px;height:13px"></i>
+        </button>
+    </div>
+</div>
+
+<!--   Overlay del sidebar   -->
+<div class="sidebar-overlay" id="archivo-sidebar-overlay"></div>
+
+<!--   Body wrapper (sidebar + main)   -->
+<div class="app-layout">
+    <!-- Sidebar con Carpetas   -->
+    <aside class="sidebar" id="archivo-sidebar">
+        <nav class="sidebar-nav">
+            <div class="sidebar-section-label">Carpetas</div>
+            
+            <div class="sidebar-item active" data-folder="all">
+                <i data-lucide="folder" style="width:13px;height:13px"></i>
+                <span class="sidebar-item-name">Todos</span>
+                <span class="count-bubble">{{ total }}</span>
+            </div>
+            
+            <div id="sortable-folders">
+            {% for c in carpetas_flat %}
+            <div class="sidebar-item sidebar-folder{% if c.children %} has-children{% endif %}" data-folder="{{ c.id }}" data-id="{{ c.id }}" data-nivel="{{ c.nivel }}" data-parent="{{ c.parent_id|default:'' }}" style="padding-left: calc(12px + {{ c.nivel }} * 16px)">
+                {% if c.children %}<i data-lucide="folder-open" style="width:13px;height:13px"></i>
+                {% else %}<i data-lucide="folder" style="width:13px;height:13px"></i>{% endif %}
+                <span class="sidebar-item-name">{{ c.nombre }}</span>
+                <span class="count-bubble">{{ c.total }}</span>
+                
+                <button class="sidebar-item-action" data-edit-folder="{{ c.id }}" data-nombre="{{ c.nombre }}" title="Renombrar carpeta">
+                    <i data-lucide="pencil" style="width:10px;height:10px"></i>
+                </button>
+                <button class="sidebar-item-action sidebar-item-action-danger" data-del-folder="{{ c.id }}" title="Eliminar carpeta">
+                    <i data-lucide="x" style="width:10px;height:10px"></i>
+                </button>
+            </div>
+            {% empty %}
+            <p class="sidebar-empty">Sin carpetas aún</p>
+            {% endfor %}
+            </div>
+        </nav>
+    </aside>
+
+    <script>if(innerWidth<=768){var s=document.getElementById('archivo-sidebar');if(s)s.classList.add('is-collapsed')}</script>
+    
+    <!-- Main content   -->
+    <main class="main-content" id="archivo-main">
+        <div class="pw-empty" id="archivo-empty">
+            <i data-lucide="cloud-upload" style="width:40px;height:40px;opacity:.2"></i>
+            <p>No hay archivos</p>
+        </div>
+
+        {% for c in carpetas %}
+        <section class="bm-section" data-section="{{ c.id }}">
+            <div class="bm-section-header">
+                <div class="bm-section-title">
+                    <i data-lucide="folder" style="width:12px;height:12px"></i>
+                    {{ c.nombre }}
+                </div>
+                <span class="count-bubble">{{ c.total }}</span>
+            </div>
+
+            <div class="pw-grid archivo-grid" data-folder="{{ c.id }}">
+                {% for a in archivos_por_carpeta|get_item:c.id %}
+                <article class="pw-card pw-card--{{ a.tipo }}" data-id="{{ a.id }}" data-folder="{{ c.id }}" data-url="{{ a.url_archivo }}" data-tipo="{{ a.tipo }}" data-titulo="{{ a.titulo }}" data-thumbnail="{{ a.thumbnail_base64|default:'' }}" data-is-gif="{{ a.is_gif|yesno:'true,false' }}" tabindex="0">
+                    <div class="pw-check">
+                        <i data-lucide="check" style="width:12px;height:12px"></i>
+                    </div>
+                    <div class="pw-card-thumb">
+                        {% if a.tipo == 'image' %}
+                        <img src="{{ a.thumbnail_url }}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+                        {% elif a.tipo == 'video' %}
+                        <video src="{{ a.url_archivo }}" muted preload="none" playsinline></video>
+                        {% else %}
+                        <div class="pw-card-noimg"><i data-lucide="file" style="width:32px;height:32px"></i></div>
+                        {% endif %}
+                        {% if a.tipo == 'video' %}
+                        <i data-lucide="film" class="pw-card-badge-icon"></i>
+                        {% elif a.tipo == 'image' %}
+                        <i data-lucide="image" class="pw-card-badge-icon"></i>
+                        {% else %}
+                        <i data-lucide="file" class="pw-card-badge-icon"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="pw-card-overlay">
+                        <button class="pw-overlay-btn" title="Ver">
+                            {% if a.tipo == 'video' %}
+                            <i data-lucide="film" style="width:14px;height:14px"></i>
+                            {% elif a.tipo == 'image' %}
+                            <i data-lucide="image" style="width:14px;height:14px"></i>
+                            {% else %}
+                            <i data-lucide="file" style="width:14px;height:14px"></i>
+                            {% endif %} Ver
+                        </button>
+                    </div>
+                    
+                    <div class="pw-card-actions">
+                        <button class="pw-card-action" data-edit="{{ a.id }}" title="Editar">
+                            <i data-lucide="pencil" style="width:12px;height:12px"></i>
+                        </button>
+                        <button class="pw-card-action pw-card-action--danger" data-delete="{{ a.id }}" title="Eliminar">
+                            <i data-lucide="trash-2" style="width:12px;height:12px"></i>
+                        </button>
+                    </div>
+                </article>
+                {% empty %}
+                <div class="bm-empty">Sin archivos en esta carpeta</div>
+                {% endfor %}
+            </div>
+        </section>
+        {% empty %}
+        <div class="page-empty">
+            <i data-lucide="folder-open" style="width:40px;height:40px;opacity:.25"></i>
+            <h3>Sin carpetas</h3>
+            <p>Crea una con el botón "Añadir"</p>
+        </div>
+        {% endfor %}
+    </main>
+</div>
+
+<!--   Bulk action bar   -->
+<div class="bulk-bar" id="archivo-bulk-bar">
+    <div class="bulk-bar-info">
+        <div class="bulk-bar-dot"></div>
+        <span id="archivo-bulk-count">0 seleccionados</span>
+    </div>
+    <div class="bulk-bar-actions">
+        <button class="btn btn-ghost btn-sm" id="archivo-bulk-select-all" type="button">
+            <span>Seleccionar todo</span>
+        </button>
+        <div class="bulk-bar-sep"></div>
+        <button class="btn btn-primary btn-sm" id="archivo-bulk-move-btn" type="button">
+            <i data-lucide="arrow-right" style="width:12px;height:12px"></i>
+            Mover
+        </button>
+        <button class="btn btn-danger btn-sm" id="archivo-bulk-delete-btn" type="button">
+            Eliminar selección
+        </button>
+        <button class="btn btn-secondary btn-sm" id="archivo-bulk-cancel-btn" type="button">Cancelar</button>
+    </div>
+</div>
+
+<!--   Lightbox   -->
+<div class="pw-lightbox" id="archivo-lightbox">
+    <button class="pw-lightbox-close" id="archivo-lightbox-close" title="Cerrar (Esc)">
+        <i data-lucide="x" style="width:20px;height:20px"></i>
+    </button>
+    <button class="pw-lightbox-prev" id="archivo-lightbox-prev" title="Anterior (←)">
+        <i data-lucide="chevron-left" style="width:24px;height:24px"></i>
+    </button>
+    <button class="pw-lightbox-next" id="archivo-lightbox-next" title="Siguiente (→)">
+        <i data-lucide="chevron-right" style="width:24px;height:24px"></i>
+    </button>
+    
+    <div class="pw-lightbox-content" id="archivo-lightbox-content">
+        <div class="pw-lightbox-loading" id="archivo-lightbox-loading">
+            <div class="pw-lightbox-spinner"></div>
+        </div>
+        <img class="pw-lightbox-img" id="archivo-lightbox-img" src="" alt="" loading="eager" decoding="async" style="display:none">
+        <video class="pw-lightbox-video" id="archivo-lightbox-video" controls loop muted playsinline style="display:none"></video>
+    </div>
+    
+    <div class="pw-lightbox-info" id="archivo-lightbox-info">
+        <span class="pw-lightbox-title" id="archivo-lightbox-title"></span>
+        <span class="pw-lightbox-counter" id="archivo-lightbox-counter"></span>
+    </div>
+</div>
+
+<!--   Modal Añadir   -->
+<div class="modal-backdrop" id="archivo-modal-backdrop">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-title" id="archivo-modal-title">Añadir</span>
+            <button class="modal-close" id="archivo-modal-close" type="button">
+                <i data-lucide="x" style="width:16px;height:16px"></i>
+            </button>
+        </div>
+        
+        <div style="display:flex;gap:0;padding:0 20px;border-bottom:1px solid var(--border-muted);margin-bottom:0;">
+            <button class="tab is-active" data-tab="file" id="archivo-tab-file" type="button">Subir archivo</button>
+            <button class="tab" data-tab="url" id="archivo-tab-url" type="button">Subir por URL</button>
+            <button class="tab" data-tab="folder" id="archivo-tab-folder" type="button">Carpeta</button>
+        </div>
+        
+        <div class="modal-body">
+            <div id="archivo-content-file">
+                <div class="upload-dropzone" id="archivo-upload-dropzone">
+                    <i data-lucide="upload-cloud" style="width:32px;height:32px;opacity:.35"></i>
+                    <p>Arrastra archivos aquí o haz clic para seleccionar</p>
+                    <p class="upload-hint">Imágenes y videos</p>
+                    <input type="file" id="archivo-file-input" multiple accept="image/*,video/*" style="display:none">
+                </div>
+                <div id="archivo-upload-file-list" class="upload-file-list"></div>
+                
+                <div class="upload-progress" id="archivo-upload-progress" style="display:none">
+                    <div class="upload-progress-bar"><div class="upload-progress-fill" id="archivo-upload-fill"></div></div>
+                    <span class="upload-progress-text" id="archivo-upload-progress-text">0 / 0</span>
+                </div>
+                
+                <div class="field-group">
+                    <label class="label" for="archivo-file-carpeta">Carpeta destino</label>
+                    <select class="select" id="archivo-file-carpeta">
+                        {% for c in carpetas_flat %}<option value="{{ c.id }}">{{ c.nombre }}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div id="archivo-content-url" style="display:none">
+                <div class="field-group">
+                    <label class="label" for="archivo-url-url">URL del archivo</label>
+                    <input class="input" type="url" id="archivo-url-url" placeholder="https://..." autocomplete="off">
+                </div>
+                <div class="field-group">
+                    <label class="label" for="archivo-url-titulo">Título (opcional)</label>
+                    <input class="input" type="text" id="archivo-url-titulo" placeholder="Nombre del archivo" autocomplete="off">
+                </div>
+                <div class="field-group">
+                    <label class="label" for="archivo-url-carpeta">Carpeta destino</label>
+                    <select class="select" id="archivo-url-carpeta">
+                        {% for c in carpetas_flat %}<option value="{{ c.id }}">{{ c.nombre }}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div id="archivo-content-folder" style="display:none">
+                <input type="hidden" id="archivo-folder-parent-id" value="">
+                <div class="field-group">
+                    <label class="label" for="archivo-folder-nombre">Nombre de la carpeta</label>
+                    <input class="input" type="text" id="archivo-folder-nombre" placeholder="Ej: Imágenes" autocomplete="off">
+                </div>
+                <div class="field-group">
+                    <label class="label" for="archivo-folder-parent-select">Carpeta padre (opcional)</label>
+                    <select class="select" id="archivo-folder-parent-select">
+                        <option value="">Ninguna (carpeta principal)</option>
+                        {% for c in carpetas_flat %}
+                        <option value="{{ c.id }}">{{ c.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="archivo-modal-cancel" type="button">Cancelar</button>
+            <button class="btn btn-primary" id="archivo-modal-save" type="button">Subir / Crear</button>
+        </div>
+    </div>
+</div>
+
+<!--   Modal Editar archivo   -->
+<div class="modal-backdrop" id="archivo-edit-backdrop">
+    <div class="modal modal-sm">
+        <div class="modal-header">
+            <span class="modal-title">Editar archivo</span>
+            <button class="modal-close" id="archivo-edit-close" type="button">
+                <i data-lucide="x" style="width:16px;height:16px"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="archivo-edit-id">
+            <div class="field-group">
+                <label class="label" for="archivo-edit-titulo">Título</label>
+                <input class="input" type="text" id="archivo-edit-titulo" autocomplete="off">
+            </div>
+            <div class="field-group">
+                <label class="label" for="archivo-edit-carpeta">Carpeta</label>
+                <select class="select" id="archivo-edit-carpeta">
+                    {% for c in carpetas_flat %}<option value="{{ c.id }}">{{ c.nombre }}</option>{% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="archivo-edit-cancel" type="button">Cancelar</button>
+            <button class="btn btn-primary" id="archivo-edit-save" type="button">Guardar cambios</button>
+        </div>
+    </div>
+</div>
+
+<!--   Modal Confirmar eliminar archivo   -->
+<div class="modal-backdrop" id="archivo-del-file-backdrop">
+    <div class="modal modal-sm">
+        <div class="modal-header">
+            <span class="modal-title">Eliminar archivo</span>
+            <button class="modal-close" id="archivo-del-file-close" type="button">
+                <i data-lucide="x" style="width:16px;height:16px"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-confirm-icon modal-confirm-icon--danger">
+                <i data-lucide="trash-2" style="width:20px;height:20px"></i>
+            </div>
+            <p class="modal-confirm-text">¿Eliminar <strong id="archivo-del-file-nombre"></strong>?</p>
+            <p class="modal-confirm-sub">Esta acción no se puede deshacer.</p>
+            <input type="hidden" id="archivo-del-file-id">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="archivo-del-file-cancel" type="button">Cancelar</button>
+            <button class="btn btn-danger" id="archivo-del-file-confirm" type="button">
+                <i data-lucide="trash-2" style="width:13px;height:13px"></i>
+                Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--   Modal Editar carpeta   -->
+<div class="modal-backdrop" id="archivo-edit-folder-backdrop">
+    <div class="modal modal-sm">
+        <div class="modal-header">
+            <span class="modal-title">Editar carpeta</span>
+            <button class="modal-close" id="archivo-edit-folder-close" type="button">
+                <i data-lucide="x" style="width:16px;height:16px"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="archivo-edit-folder-id">
+            <div class="field-group">
+                <label class="label" for="archivo-edit-folder-nombre">Nombre</label>
+                <input class="input" type="text" id="archivo-edit-folder-nombre" autocomplete="off">
+            </div>
+            <div class="field-group">
+                <label class="label" for="archivo-edit-folder-parent">Carpeta padre</label>
+                <select class="select" id="archivo-edit-folder-parent">
+                    <option value="">Ninguna (carpeta principal)</option>
+                    {% for c in carpetas_flat %}
+                    <option value="{{ c.id }}">{{ c.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="archivo-edit-folder-cancel" type="button">Cancelar</button>
+            <button class="btn btn-primary" id="archivo-edit-folder-save" type="button">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!--   Modal Confirmar eliminar carpeta   -->
+<div class="modal-backdrop" id="archivo-del-folder-backdrop">
+    <div class="modal modal-sm">
+        <div class="modal-header">
+            <span class="modal-title">Eliminar carpeta</span>
+            <button class="modal-close" id="archivo-del-folder-close" type="button">
+                <i data-lucide="x" style="width:16px;height:16px"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-confirm-icon modal-confirm-icon--danger">
+                <i data-lucide="folder" style="width:20px;height:20px"></i>
+            </div>
+            <p class="modal-confirm-text">¿Eliminar la carpeta <strong id="archivo-del-folder-nombre"></strong>?</p>
+            <p class="modal-confirm-sub">Se eliminarán todos los archivos que contiene. Esta acción no se puede deshacer.</p>
+            <input type="hidden" id="archivo-del-folder-id">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="archivo-del-folder-cancel" type="button">Cancelar</button>
+            <button class="btn btn-danger" id="archivo-del-folder-confirm" type="button">
+                <i data-lucide="trash-2" style="width:13px;height:13px"></i>
+                Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--   Modal Mover archivos   -->
+<div class="modal-backdrop" id="archivo-bulk-move-backdrop">
+    <div class="modal modal-sm">
+        <div class="modal-header">
+            <span class="modal-title">Mover archivos</span>
+            <button class="modal-close" id="archivo-bulk-move-close" type="button">
+                <i data-lucide="x" style="width:16px;height:16px"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-confirm-text" style="text-align: left;">
+                Mover <strong id="archivo-bulk-move-count"></strong> archivo(s) a:
+            </p>
+            <div class="folder-tree-select" id="archivo-move-tree" style="margin-top: 12px; max-height: 240px; overflow-y: auto;">
+                {% for c in carpetas_flat %}
+                <div class="folder-tree-item" data-folder-id="{{ c.id }}" data-nivel="{{ c.nivel }}" style="padding-left: calc(8px + {{ c.nivel }} * 16px); display: flex; align-items: center; gap: 6px; padding: 6px 8px; cursor: pointer; border-radius: var(--r-sm); transition: background 0.15s;">
+                    <i data-lucide="folder" style="width:14px;height:14px;flex-shrink:0;color:var(--text-subtle)"></i>
+                    <span style="font-size:13px;">{{ c.nombre }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <input type="hidden" id="archivo-bulk-move-selected" value="">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="archivo-bulk-move-cancel" type="button">Cancelar</button>
+            <button class="btn btn-primary" id="archivo-bulk-move-confirm" type="button">Mover</button>
+        </div>
+    </div>
+</div>
+
+<!--   Modal Confirmar eliminar bulk   -->
+<div class="modal-backdrop" id="archivo-bulk-del-backdrop">
+    <div class="modal modal-sm">
+        <div class="modal-header">
+            <span class="modal-title">Eliminar archivos</span>
+            <button class="modal-close" id="archivo-bulk-del-close" type="button">
+                <i data-lucide="x" style="width:16px;height:16px"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-confirm-icon modal-confirm-icon--danger">
+                <i data-lucide="trash-2" style="width:20px;height:20px"></i>
+            </div>
+            <p class="modal-confirm-text">¿Eliminar <strong id="archivo-bulk-del-count-text"></strong>?</p>
+            <p class="modal-confirm-sub">Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="archivo-bulk-del-cancel" type="button">Cancelar</button>
+            <button class="btn btn-danger" id="archivo-bulk-del-confirm" type="button">
+                <i data-lucide="trash-2" style="width:13px;height:13px"></i>
+                Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--   Longpress modal (mobile)   -->
+<div class="modal-backdrop" id="archivo-lp-backdrop">
+    <div class="modal" style="max-width:280px">
+        <div class="modal-body" style="padding:8px 0">
+            <button class="longpress-option" id="archivo-lp-subfolder" type="button">
+                <i data-lucide="folder-plus" style="width:15px;height:15px"></i>
+                <span>Crear sub-carpeta</span>
+            </button>
+            <button class="longpress-option" id="archivo-lp-edit" type="button">
+                <i data-lucide="pencil" style="width:15px;height:15px"></i>
+                <span>Editar</span>
+            </button>
+            <button class="longpress-option longpress-option--danger" id="archivo-lp-delete" type="button">
+                <i data-lucide="trash-2" style="width:15px;height:15px"></i>
+                <span>Eliminar</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--   Toasts   -->
+<div class="toast-container" id="toast-container"></div>
+
+{% csrf_token %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const ARCHIVO_CONFIG = {
+    csrfToken:  "{{ csrf_token }}",
+    carpetasTree: {{ carpetas_tree_json|safe }},
+};
+</script>
+<script src="{% static 'script/archivo.js' %}"></script>
+{% endblock %}

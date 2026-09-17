@@ -154,3 +154,76 @@ class GaleriaConfig(models.Model):
     def load(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class ArchivoConfig(models.Model):
+    """
+    Configuración del proveedor de archivos.
+    Singleton: solo debe existir un registro (pk=1).
+    """
+    api_url = models.URLField(max_length=200, help_text='URL base de la API (sin barra final)')
+
+    class Meta:
+        verbose_name = 'configuración de archivos'
+        verbose_name_plural = 'configuraciones de archivos'
+
+    def __str__(self):
+        return f'Archivo Config: {self.api_url}'
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
+class CarpetaArchivo(models.Model):
+    nombre = models.CharField(max_length=80)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carpetas_archivo')
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='hijas')
+    nivel = models.IntegerField(default=0)
+    orden = models.IntegerField(default=0)
+    creada = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['orden', 'nombre']
+        unique_together = ('usuario', 'nombre', 'parent')
+
+    def __str__(self):
+        return self.nombre
+
+    def get_descendants(self):
+        result = []
+        for hijo in self.hijas.all():
+            result.append(hijo)
+            result.extend(hijo.get_descendants())
+        return result
+
+    def get_ruta(self):
+        parts = []
+        actual = self
+        while actual:
+            parts.append(actual.nombre)
+            actual = actual.parent
+        return list(reversed(parts))
+
+
+class Archivo(models.Model):
+    titulo = models.CharField(max_length=120)
+    url_archivo = models.CharField(max_length=500)
+    nombre_original = models.CharField(max_length=255, blank=True, default='')
+    tipo = models.CharField(max_length=20, default='image', help_text='image, video, other')
+    carpeta = models.ForeignKey(CarpetaArchivo, on_delete=models.CASCADE, related_name='archivos')
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='archivos')
+    orden = models.IntegerField(default=0)
+    creado = models.DateTimeField(auto_now_add=True)
+    thumbnail_base64 = models.TextField(blank=True, default='')
+
+    class Meta:
+        ordering = ['orden', 'titulo']
+
+    def __str__(self):
+        return self.titulo
